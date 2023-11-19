@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utilities Information Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      padding: 0px;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+
+    section {
+        background-color:#008B8B;
+        padding: 40px;
+
+    }
+
+
+  </style>
+    <script>
+        function submitForm() {
+            // Replace these URLs with the ones you want to use
+            var postUrl = "http://localhost:8080/insertutilities";
+            var successUrl = "http://localhost:8080/insertSuccess";
+            var problemUrl = "http://localhost:8080/failed";
+
+            // Get form data
+            var andr = document.getElementById("android").value;
+            var apple = document.getElementById("apple").value;
+            var assistant;
+            if (andr == "Android") {
+                as = "Android";
+            } else {
+                as = "Apple";
+            }
+            var sst = document.getElementById("startAndStop").checked;
+            var nav = document.getElementById("navigationsystem").checked;
+            var parkA = document.getElementById("parkingassistant").checked;
+            var parkC = document.getElementById("parkingcamera").checked;
+            var cc = document.getElementById("cruisecontrol").checked;
+            var usb = document.getElementById("usb").checked;
+            var su = document.getElementById("surroundaudio").checked;
+            var bt = document.getElementById("bluetooth").checked;
+            var radio = document.getElementById("radio").checked;
+            var dis = document.getElementById("display").checked;
+            var ac = document.getElementById("ac").checked;
+            var cd = document.getElementById("cd").checked;
+            var desc = document.getElementById("desc").value;
+            const params={
+                            assistant: as,
+                            startAndStop: sst,
+                            navigationSystem: nav,
+                            parkingAssistant: parkA,
+                            parkingCamera: parkC,
+                            cruiseControl: cc,
+                            USBPorts: usb,
+                            SurroundAudio: su,
+                            bluetooth: bt,
+                            radioAMFM: radio,
+                            display: dis,
+                            airConditioning: ac,
+                            CDPlayer: cd,
+                            description: desc
+                            };
+
+            // Create a new XMLHttpRequest object
+            var xhr = new XMLHttpRequest();
+
+            // Set up the request
+            xhr.open("POST", postUrl, true);
+
+            xhr.setRequestHeader('Content-type', 'application/json')
+            //xhr.setRequestHeader('Access-Control-Allow-Origin',"*")
+
+            // Define what happens on successful data submission
+            xhr.onload = function () {
+                if (200 === 200) {
+                    // Redirect to the success page
+                    window.location.href = successUrl;
+                }else{
+                    window.location.href= problemUrl;
+                }
+            };
+
+            // Send the form data
+            xhr.send(JSON.stringify(params)); // Make sure to stringify
+        }
+    </script>
+</head>
+<body>
+
+<h2>Utilities Insertion Form</h2>
+
+<form id="myForm" onsubmit="event.preventDefault(); submitForm();">
+<section>
+    <label for="android" >Android Auto</label>
+    <input type="radio" id="android" name="assistant" value="Android" />
+
+    <label for="apple">AppleCarPlay</label>
+    <input type="radio" id="apple" name="assistant" value="Apple" />
+    <br>
+
+    <label for="startAndStop">Start and Stop:</label>
+    <input type="checkbox" id="startAndStop" name="startAndStop" />
+    <br>
+
+    <label for="navigationsystem">Navigation System:</label>
+    <input type="checkbox" id="navigationsystem" name="navigationsystem" />
+    <br>
+
+    <label for="parkingassistant">Parking Assistant:</label>
+    <input type="checkbox" id="parkingassistant" name="parkingassistant" />
+    <br>
+
+    <label for="usb">Usb:</label>
+    <input type="checkbox" id="usb" name="usb" />
+    <br>
+
+
+    <label for="cruisecontrol">Cruise Control:</label>
+    <input type="checkbox" id="cruisecontrol" name="cruisecontrol" />
+    <br>
+
+
+    <label for="parkingcamera">Parking Camera:</label>
+    <input type="checkbox" id="parkingcamera" name="parkingcamera" />
+    <br>
+
+
+    <label for="surroundaudio">Surround Audio:</label>
+    <input type="checkbox" id="surroundaudio" name="surroundaudio" />
+    <br>
+
+    <label for="bluetooth">Bluetooth:</label>
+    <input type="checkbox" id="bluetooth" name="bluetooth" />
+    <br>
+
+    <label for="radio">Radio AFMF:</label>
+    <input type="checkbox" id="radio" name="radioAMFM" />
+    <br>
+
+    <label for="display">Display:</label>
+    <input type="checkbox" id="display" name="display" />
+    <br>
+
+    <label for="ac">Air Conditioning:</label>
+    <input type="checkbox" id="ac" name="ac" />
+    <br>
+
+    <label for="cd">CD Player:</label>
+    <input type="checkbox" id="cd" name="cd" />
+    <br>
+
+    <label for="desc">Description:</label>
+    <input type="text" id="desc" name="desc" />
+    <br>
+
+  <button type="submit">Submit All</button>
+
+</section>
+
+</form>
+
+</body>
+</html>
