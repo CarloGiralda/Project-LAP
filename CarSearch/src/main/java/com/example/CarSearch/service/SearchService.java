@@ -5,5 +5,5 @@ import com.example.CarSearch.model.SearchDTO;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public interface SearchService {
-    public ResponseDTO getCar(@RequestBody SearchDTO dto);
+    public ResponseDTO getCar(SearchDTO dto);
 }

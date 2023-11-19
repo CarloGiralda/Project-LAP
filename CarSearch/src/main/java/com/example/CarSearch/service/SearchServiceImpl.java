@@ -26,8 +26,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    @ResponseBody
-    public ResponseDTO getCar(@RequestBody SearchDTO dto) {
+    public ResponseDTO getCar(SearchDTO dto) {
         List<Car> cars = carRepo.findAll(where(CarSpecifications.equalYear(dto.getCar().getYear()))
                 .and(CarSpecifications.equalPollLvl(dto.getCar().getPollutionLevel()))
                 .and(CarSpecifications.equalFuel(dto.getCar().getFuel()))
