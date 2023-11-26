@@ -1,5 +1,5 @@
 # Service port list
-Api gateway 8080 \n
+Api gateway 8080
 Service discovery 8761
 Frontend 8081
 User service 9000, DB 5434
