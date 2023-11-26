@@ -1,8 +1,8 @@
 # Service port list
-Api gateway 8080
-Service discovery 8761
-Frontend 8081
-User service 9000, DB 5434
-Send Email 9001, DB 5434
-Car insertion 9002, DB 5433
-Car search 9003, DB 5433
+- Api gateway 8080
+- Service discovery 8761
+- Frontend 8081
+- User service 9000, DB 5434
+- Send Email 9001, DB 5434
+- Car insertion 9002, DB 5433
+- Car search 9003, DB 5433
