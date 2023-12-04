@@ -6,3 +6,5 @@
 - Send Email 9001, DB 5434
 - Car insertion 9002, DB 5433
 - Car search 9003, DB 5433
+- User rating 9004
+- Car book 9005
