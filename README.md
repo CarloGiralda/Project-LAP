@@ -10,3 +10,5 @@
 - Car book 9005
 - Chat 9006
 - Notification 9007
+- Select area 9008
+- Take out Insurance 9009
