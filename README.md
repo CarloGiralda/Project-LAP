@@ -12,3 +12,4 @@
 - Notification 9007
 - Select area 9008
 - Take out Insurance 9009
+- Payment service 9010
