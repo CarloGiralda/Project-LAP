@@ -1,0 +1,176 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+
+spring:
+    application:
+        name: api-gateway
+
+    ##GATEWAY CONFIGURATIONS
+    cloud:
+        gateway:
+            routes:
+            # user service authentication
+            - id: user-service-auth
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/auth/**
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+            # user service registration confirmation
+            - id: user-service-confirmation
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/confirmation/**
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+            # car insertion service
+            - id: carinsertion-service
+              uri: lb://CARINSERTION-SERVICE
+              predicates:
+                - Path=/carinsert/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+            # car search service
+            - id: carsearch-service
+              uri: lb://CARSEARCH-SERVICE
+              predicates:
+                - Path=/carsearch/**
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+            # send email service
+            - id: sendEmail-service
+              uri: lb://SENDEMAIL-SERVICE
+              predicates:
+                - Path=/email/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+            - id: userRating-service
+              uri: lb://USERRATING-SERVICE
+              predicates:
+                - Path=/rating/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+            - id: carRating-service
+              uri: lb://CARRATING-SERVICE
+              predicates:
+                - Path=/carrating/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+              # chat service
+            - id: chat-service
+              uri: http://localhost:9004
+              predicates:
+                - Path=/chat/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+              # carBook service
+            - id: carBook-service
+              uri: lb://CARBOOK-SERVICE
+              predicates:
+                - Path=/reservation/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
+
+            - id: notification-service
+              uri: lb://NOTIFICATION-SERVICE
+              predicates:
+                Path=/sockjs/**
+
+            - id: area-service
+              uri: lb://AREA-SERVICE
+              predicates:
+                - Path=/area/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                  allowedHeaders: '*'
+                  maxAge: 30
