@@ -6,11 +6,14 @@
 - Send Email 9001, DB 5434
 - Car insertion 9002, DB 5433
 - Car search 9003, DB 5433
+- Payment 9004
 - Car book 9005
 - Chat 9006
 - Notification 9007
 - Select area 9008
 - Payment service 9010
+- Blockchain 9011
+- Blockchain2 9012
 
 # keys
 -----BEGIN PRIVATE KEY-----
@@ -68,5 +71,5 @@ https://acte.ltd/utils/openssl
     docker-compose.yml
   # dockerfile
     mvn package
-    docker image build -t docker-java-jar:latest .
-    docker run docker-java-jar:latest
+    docker image build -t [microservice_name]:latest .
+    docker run -p [inside_port]:[outside_port] docker-java-jar:latest
