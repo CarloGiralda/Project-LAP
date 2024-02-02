@@ -48,25 +48,7 @@ https://acte.ltd/utils/openssl
 
 # deployment
   # docker
-    
-    //DOCKERFILE
-    FROM postgres 
-    ENV POSTGRES_PASSWORD postgres 
-    ENV POSTGRES_DB testdb 
-    COPY init.sql /docker-entrypoint-initdb.d/
-    //INIT DB
-    CREATE TABLE public.persons (
-        id int PRIMARY KEY,
-        firstName varchar(255),
-        lastName varchar(255),
-        address varchar(255)
-    );
-    
-    // BUILD
-    docker build -t my-postgres-image .
-    
-    // DOCKER COMMAND PSQL
-    docker run --name postgres-docker -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+    eclipse-temurin:17-jre-alpine —> most lightweight Java 17 image
   # compose
     docker-compose.yml
   # dockerfile
