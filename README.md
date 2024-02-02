@@ -45,9 +45,10 @@ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-ma
 # to generate rsa keys and veirfy signature
 https://8gwifi.org/RSAFunctionality?rsasignverifyfunctions=rsasignverifyfunctions&keysize=512
 https://acte.ltd/utils/openssl
-
+# initial data postgresql
+https://www.baeldung.com/spring-boot-data-sql-and-schema-sql
 # deployment
-  # docker
+  # docker lightweight image
     eclipse-temurin:17-jre-alpine —> most lightweight Java 17 image
   # compose
     docker-compose.yml
