@@ -53,7 +53,7 @@ https://8gwifi.org/RSAFunctionality?rsasignverifyfunctions=rsasignverifyfunction
 https://acte.ltd/utils/openssl
 # deployment
   # docker lightweight image
-    eclipse-temurin:17-jre-alpine —> most lightweight Java 17 image
+    bellsoft/liberica-openjdk-alpine:latest —> most lightweight Java 17 image (120 MB)
   # compose
     docker-compose.yml
   # dockerfile
