@@ -42,6 +42,12 @@ ULsK64esi/QtSy6c6yHDGwfZcpnPAHc8p770dyCR4EXTcInKOeHgsxMDXX2cmO1D
 # command for RabbitMQ
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
 
+# SQL data imports
+1.ddl_auto set to create
+2.in application.properties insert spring.jpa.defer-datasource-initialization=true spring.sql.init.mode=always
+3.in src/main/resources insert a file named data.sql with the insert into statements (stored in github folder SQL_IMPORTS/{SERVICE_NAME})
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
+
 # to generate rsa keys and veirfy signature
 https://8gwifi.org/RSAFunctionality?rsasignverifyfunctions=rsasignverifyfunctions&keysize=512
 https://acte.ltd/utils/openssl
