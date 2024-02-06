@@ -1,4 +1,5 @@
 version: '3'
+############################### in api-gw in chat service url in application.yml insert the ms name "chat-service" check the eureka url differences in properties and yml in overriding them (the names)
 services:
   frontend:
     build: ./docker/frontend
