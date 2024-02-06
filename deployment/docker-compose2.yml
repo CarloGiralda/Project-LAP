@@ -1,14 +1,25 @@
 version: '3'
 services:
+  frontend:
+    build: ./docker/frontend
+    container_name: frontend
+    ports:
+      - "8081:8081"
   db:
-    image: postgres
+    image: postgres:12.3-alpine
     container_name: db
     ports:
       - "5433:5433"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: postgres
       PGPORT: 5433
+  queue:
+    image: rabbitmq:3.12-management
+    container_name: queue
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   discovery:
     build: ./docker/discovery
     container_name: discovery
@@ -21,6 +32,8 @@ services:
       - "8080:8080"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      - discovery
   user-service:
     build: ./docker/user
     container_name: user-service
@@ -32,3 +45,145 @@ services:
       SPRING_JPA_HIBERNATE_DDL-AUTO: create
     depends_on:
       - db
+      - discovery
+  send-email:
+    build: ./docker/email
+    container_name: send-email
+    ports:
+      - "9001:9001"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+    depends_on:
+      - db
+      - discovery
+  payment-service:
+    build: ./docker/payment
+    container_name: payment-service
+    ports:
+      - "9010:9010"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      - db
+      - discovery
+#  blockchain-service:
+#    build: ./docker/blockchain
+#    container_name: blockchain-service
+#    ports:
+#      - "9011:9011"
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+#      SPRING_RABBITMQ_HOST: queue
+#      SPRING_RABBITMQ_PORT: 5672
+#      SPRING_RABBITMQ_PASSWORD: guest
+#      SPRING_RABBITMQ_USERNAME: guest
+#    depends_on:
+#      - queue
+#      - discovery
+#  blockchain-service2:
+#    build: ./docker/blockchain
+#    container_name: blockchain-service2
+#    ports:
+#      - "9012:9012"
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+#      SPRING_RABBITMQ_HOST: queue
+#      SPRING_RABBITMQ_PORT: 5672
+#      SPRING_RABBITMQ_PASSWORD: guest
+#      SPRING_RABBITMQ_USERNAME: guest
+#    depends_on:
+#      - queue
+#      - discovery
+  car-insertion:
+    build: ./docker/insertion
+    container_name: car-insertion
+    ports:
+      - "9002:9002"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      - db
+      - discovery
+  car-search:
+    build: ./docker/search
+    container_name: car-search
+    ports:
+      - "9003:9003"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+    depends_on:
+      - db
+      - discovery
+  user-rating:
+    build: ./docker/rating
+    container_name: user-rating
+    ports:
+      - "9004:9004"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      - db
+      - discovery
+  car-book:
+    build: ./docker/book
+    container_name: car-book
+    ports:
+      - "9005:9005"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+      SPRING_RABBITMQ_HOST: queue
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_PASSWORD: guest
+      SPRING_RABBITMQ_USERNAME: guest
+    depends_on:
+      - db
+      - queue
+      - discovery
+  chat-service:
+    build: ./docker/chat
+    container_name: chat-service
+    ports:
+      - "9006:9006"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      - db
+  notification-service:
+    build: ./docker/notification
+    container_name: notification-service
+    ports:
+      - "9007:9007"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_RABBITMQ_HOST: queue
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_PASSWORD: guest
+      SPRING_RABBITMQ_USERNAME: guest
+    depends_on:
+      - queue
+      - discovery
+  area-service:
+    build: ./docker/area
+    container_name: area-service
+    ports:
+      - "9008:9008"
+    environment:
+      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      - db
+      - discovery
