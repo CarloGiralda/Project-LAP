@@ -60,3 +60,14 @@ https://acte.ltd/utils/openssl
     mvn package
     docker image build -t [microservice_name]:latest .
     docker run -p [inside_port]:[outside_port] docker-java-jar:latest
+# TODO in deployment
+- log level error
+- services with eureka.properties —> erase and put a application.yml
+- url in requests change if localhost
+- in chat js change url from localhost:9004 to localhost 8080 inserting a new entry in gateway
+- change id of insertions in des
+- load new map.html
+- one message not retrieved in chat init
+- check if needed to pass through gateway
+- try to not log in stdout the services
+
