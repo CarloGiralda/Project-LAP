@@ -105,7 +105,7 @@ services:
     ports:
       - "9002:9002"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
       SPRING_JPA_HIBERNATE_DDL-AUTO: create
     depends_on:
@@ -117,19 +117,19 @@ services:
     ports:
       - "9003:9003"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
     depends_on:
       - db
       - discovery
-  user-rating:
+  car-rating:
     build: ./docker/rating
-    container_name: user-rating
+    container_name: car-rating
     ports:
       - "9004:9004"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
       SPRING_JPA_HIBERNATE_DDL-AUTO: create
     depends_on:
@@ -141,7 +141,7 @@ services:
     ports:
       - "9005:9005"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
       SPRING_JPA_HIBERNATE_DDL-AUTO: create
       SPRING_RABBITMQ_HOST: queue
@@ -152,13 +152,14 @@ services:
       - db
       - queue
       - discovery
-  chat-service:
+  chat:
     build: ./docker/chat
-    container_name: chat-service
+    container_name: chat
     ports:
       - "9006:9006"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      BROKER_RELAY_HOST: chat
       SPRING_JPA_HIBERNATE_DDL-AUTO: create
     depends_on:
       - db
@@ -182,7 +183,7 @@ services:
     ports:
       - "9008:9008"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE: http://discovery:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
       SPRING_JPA_HIBERNATE_DDL-AUTO: create
     depends_on:
