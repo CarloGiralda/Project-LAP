@@ -65,7 +65,7 @@ https://acte.ltd/utils/openssl
 - services with eureka.properties —> erase and put a application.yml
 - url in requests change if localhost
 - in chat js change url from localhost:9004 to localhost 8080 inserting a new entry in gateway
-- change id of insertions in des
+- change id of insertions
 - load new map.html
 - one message not retrieved in chat init
 - check if needed to pass through gateway
