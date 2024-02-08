@@ -60,6 +60,9 @@ https://acte.ltd/utils/openssl
     mvn package
     docker image build -t [microservice_name]:latest .
     docker run -p [inside_port]:[outside_port] docker-java-jar:latest
+  # commands on terminal
+    - docker compose -f docker-compose2.yml -p project up      <-- used to start everything up
+    - docker compose -p project down                           <-- used to shut everything down
 # TODO in deployment
 - log level error
 - services with eureka.properties —> erase and put a application.yml
