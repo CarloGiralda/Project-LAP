@@ -6,7 +6,7 @@
 - Send Email 9001, DB 5434
 - Car insertion 9002, DB 5433
 - Car search 9003, DB 5433
-- Payment 9004
+- Car rating 9004
 - Car book 9005
 - Chat 9006
 - Notification 9007
