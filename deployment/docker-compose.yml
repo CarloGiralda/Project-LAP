@@ -134,6 +134,7 @@ services:
     depends_on:
       - db
       - discovery
+      - car-insertion
   car-rating:
     build: ./docker/car-rating
     container_name: car-rating
@@ -146,6 +147,7 @@ services:
     depends_on:
       - db
       - discovery
+      - car-insertion
   car-book:
     build: ./docker/car-book
     container_name: car-book
@@ -159,6 +161,7 @@ services:
       - db
       - rabbitmq
       - discovery
+      - car-search
     # network_mode: host
   # chat:
   #   build: ./docker/chat
