@@ -1,3 +1,5 @@
+# TODO
+container name of chat in apllication.yml of gateway plus auth filter in c-service and set allowed origin in chat service for 8080
 # Service port list
 - Api gateway 8080
 - Service discovery 8761
