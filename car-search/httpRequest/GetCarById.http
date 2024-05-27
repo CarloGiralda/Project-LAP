@@ -1,0 +1,5 @@
+### list of subscribed user for car with id 5
+GET http://localhost:9003/carsearch/getCarNameById/1
+
+### list of subscribed user for car with id 5
+GET http://localhost:9003/carsearch/getCarById/2

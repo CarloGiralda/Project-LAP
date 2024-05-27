@@ -1,0 +1,19 @@
+### Send POST request with json body
+POST http://localhost:9006/payment/createTransaction
+Content-Type: application/json
+
+{
+  "senderUsername": "test9000@gmail.com",
+  "receiverUsername": "test9000@gmail.com",
+  "price": 300
+}
+
+
+### send GET request
+GET http://localhost:9006/payment/getBalance
+Logged-In-User: gabriele.lerani2000@gmail.com
+
+
+### send POST to generate key pair
+POST http://localhost:9006/payment/createUserWallet
+Logged-In-User: test9000@gmail.com

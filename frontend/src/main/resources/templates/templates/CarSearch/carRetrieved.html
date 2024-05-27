@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Car retrieved</title>
+
+    <link style="style.css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+    <!-- Option 1: Include in HTML -->
+    <!-- import icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+    <!-- custom css importing-->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/carRetrieved.css">
+
+
+    <script src="/js/CarSearch/fillCarPage.js"></script>
+    <script src="/js/CarSearch/carSubscription.js"></script>
+    <script src="/js/navBar.js"></script>
+    <script src="/js/cookie.js"></script>
+
+    <style>
+
+
+        .checkbox-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-container .form-group {
+            display: flex;
+            align-items: center; /* Align items vertically in the center */
+            margin-right: 10px; /* Adjust margin between checkboxes */
+            margin-bottom: 10px; /* Adjust margin between rows */
+        }
+
+        .checkbox-container .form-group input {
+            display: none; /* Hide the actual checkbox */
+        }
+
+        .checkbox-container .form-group label {
+            margin-right: 5px; /* Adjust margin between pseudo-label and checkbox */
+            padding: 8px 12px; /* Adjust padding for visual appearance */
+            border-radius: 5px; /* Add rounded corners */
+            cursor: pointer; /* Add cursor pointer on hover for better UX */
+            border: 1px solid #ccc; /* Add border for better visibility */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions for background color and text color */
+        }
+
+        .checkbox-container .form-group input:checked + label {
+            background-color: #565656; /* Darker green color when checked */
+            color: #ffffff; /* White text color on top of the dark green background */
+        }
+
+        .checkbox-container .form-group label:hover {
+            background-color: #757575; /* Light green color on hover */
+            color: #ffffff; /* Change text color to white on hover */
+        }
+
+
+
+    </style>
+
+</head>
+
+<body onload="fillPage()">
+
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top" data-bs-theme="dark">
+        <div class="container-fluid">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+                <div class="navbar-nav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/" id="home">Home</a>
+                        </li>
+
+                        <!-- Conditionally show links if user is not logged-in -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/registration" id="signupLink">Sign-up</a>
+                        </li>
+                        <li class="nav-item" >
+                            <a class="nav-link" href="/login" id="loginLink">Login</a>
+                        </li>
+
+                        <!-- Conditionally show links if user is logged-in -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/chat/page" id="chatLink">Chat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/carinsert/insertoffer" id="carInsertion">Insert</a>
+                        </li>
+
+                        <li>
+                            <a class="nav-link" href="/searchbar" th:href="@{/searchbar}">Search</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+
+            <!-- User account and notification menu dropdown -->
+            <div class="navbar-collapse justify-content-end" id="navbarNavDarkDropdown">
+
+                <ul class="navbar-nav d-flex flex-row me-1">
+
+                    <!-- Notification dropdown menu -->
+                    <li id="notificationDropdown" class="nav-item me-3 me-lg-0 dropdown" style="display: block">
+                        <a id ="bellLink" class="me-3 btn btn-dark rounded-4" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell"></i>
+                            <span id="notificationBell" class="badge rounded-pill badge-notification bg-danger" style="display: compact"></span>
+                        </a>
+
+                        <ul id="NotificationList" class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark hidden-arrow animate slideIn">
+                            <!-- Add dynamic content for notifications -->
+
+                        </ul>
+                    </li>
+                </ul>
+
+
+                <ul class="navbar-nav">
+
+                    <li id="userDropDown" class="nav-item dropdown" style="display: block">
+                        <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span style="color: #ff9900;" id="usernameDisplay">User</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark animate slideIn">
+                            <!-- TODO link to user settings -->
+                            <li><a class="dropdown-item" href="/userSettings">User settings</a></li>
+
+                            <li><a class="dropdown-item" href="/login?loggedOut=true">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+</header>
+
+<main>
+
+    <div class="container-xxl bd-gutter mt-5 my-md-4 bd-layout">
+
+        <!-- SIDE BAR WITH RENT DETAILS -->
+        <aside class="bd-sidebar">
+            <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="bdSidebar" aria-labelledby="bdSidebarOffcanvasLabel">
+
+                <div class="container col-md-6 mt-4 group border rounded p-4 mb-3">
+                    <!--<h1 class="text-center mb-4"> Rent details </h1>-->
+                    <h1 id="brandmodel" class="text-center mb-4 ">Car name</h1>
+
+                    <div class="row border-bottom">
+                        <div class="col">
+                            <p>Zone: </p>
+                        </div>
+
+                        <div class="col">
+                            <p id="zone"></p>
+                        </div>
+                    </div>
+
+                    <div class="row border-bottom">
+                        <div class="col">
+                            <p>Now available: </p>
+                        </div>
+
+                        <div class="col">
+                            <p id="nowAvailable"></p>
+                        </div>
+                    </div>
+
+                    <div class="row border-bottom">
+                        <div class="col">
+                            <p>Available from: </p>
+                        </div>
+
+                        <div class="col">
+                            <p id="fd"></p>
+                        </div>
+                    </div>
+
+                    <div class="row border-bottom">
+                        <div class="col">
+                            <p>Available until: </p>
+                        </div>
+
+                        <div class="col">
+                            <p id="td"></p>
+                        </div>
+                    </div>
+
+                    <div class="row border-bottom">
+                        <div class="col">
+                            <p>Price: </p>
+                        </div>
+
+                        <div class="col">
+                            <p id="price"></p>
+                        </div>
+                    </div>
+
+                    <div class="row border-bottom">
+                        <div class="col">
+                            <p>Renter: </p>
+                        </div>
+
+                        <div class="col">
+                            <p id="renter"></p>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <!-- Button to trigger REVIEWS MODAL -->
+                        <button id="buttonReviews" type="button" class="btn btn-outline-warning btn-md px-4 rounded-pill form-control mt-2" data-bs-toggle="modal" data-bs-target="#reviewsModal">
+                            Reviews
+                        </button>
+
+                        <button class="btn btn-outline-danger btn-md px-4 rounded-pill form-control mt-2" type="button" id="chat">Chat with the renter</button>
+
+                        <button class="btn btn-outline-secondary btn-md px-4 rounded-pill form-control mt-2" type="button" id="notifyButton">
+                            Subscribe to car<i class="bi bi-bell"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-md px-4 rounded-pill form-control mt-2" id="rent">Rent now</button>
+                    </div>
+
+
+
+                </div>
+                <div class="container col-md-6 mt-4 group border rounder p-4 mb-3">
+
+                    <div id="details" >
+                        <h1 class="text-center mb-4"> Details </h1>
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p><i class="bi bi-calendar-event p-2"></i>Year: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="year"></p>
+                            </div>
+                        </div>
+
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p><i class="bi bi-wind p-2"></i> Pollution Level: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="pl"></p>
+                            </div>
+                        </div>
+
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p><i class="bi bi-battery-half p-2"></i> Type of fuel: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="fuel"></p>
+                            </div>
+                        </div>
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p><i class="bi bi-people-fill p-2"></i>Passengers: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="pass"></p>
+                            </div>
+                        </div>
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p><i class="bi bi-list-ol p-2"></i> Classification: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="classification"></p>
+                            </div>
+                        </div>
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p ><i class="bi bi-door-closed p-2"></i>Doors: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="cdn"></p>
+                            </div>
+                        </div>
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p><i class="bi bi-joystick p-2"></i>Transmission: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="trans"></p>
+                            </div>
+                        </div>
+
+                        <div class="row border-bottom">
+                            <div class="col">
+                                <p><i class="bi bi-car-front p-2"></i>Engine: </p>
+                            </div>
+
+                            <div class="col">
+                                <p id="engine"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT WITH CAR DETAILS AND UTILITIES -->
+        <main class="bd-main order-1" style="width: 800px">
+
+            <!-- IMAGES AND DESCRIPTION -->
+            <div class="container">
+
+
+                <div class="preview mt-5">
+
+                    <!-- IMAGE -->
+                    <div class="preview-pic tab-content">
+                        <div class="tab-pane active" id="pic-1">
+                            <img id="image" class="rounded img-fluid" src="/img/home-carousel/car.jpg" alt="car image"/>
+                        </div>
+                    </div>
+
+
+                    <h3 class="text-body-emphasis mt-4">Description</h3>
+                    <p id="desc">
+                        Etiam sit amet ex pharetra, venenatis ante vehicula, gravida sapien. Fusce eleifend vulputate nibh, non cursus augue placerat pellentesque. Sed venenatis risus nec felis mollis, in pharetra urna euismod. Morbi aliquam ut turpis sit amet ultrices. Vestibulum mattis blandit nisl, et tristique elit scelerisque nec. Fusce eleifend laoreet dui eget aliquet. Ut rutrum risus et nunc pretium scelerisque.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- DETAILS AND UTILITIES -->
+            <div class="bd-content ps-lg-2">
+                <div class="row">
+
+
+                        <div id="utilities" class="group border rounded p-4 mb-3">
+                            <h1 class="text-center mb-4"> Utilities </h1>
+
+                            <!--Here checkbox container-->
+                            <div class="checkbox-container">
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="android" name="android" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="android">Android Auto</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="apple" name="apple" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="apple">Apple Auto</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="startAndStop" name="startAndStop" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="startAndStop">Start and Stop</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="navigationsystem" name="navigationsystem" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="navigationsystem">Navigation System</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="parkingassistant" name="parkingassistant" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="parkingassistant">Parking Assistant</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="usb" name="usb" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="usb">Usb</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="cruisecontrol" name="cruisecontrol" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="cruisecontrol">Cruise Control</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="parkingcamera" name="parkingcamera" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="parkingcamera">Parking Camera</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="surroundaudio" name="surroundaudio" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="surroundaudio">Surround Audio</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="bluetooth" name="bluetooth" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="bluetooth">Bluetooth</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="radio" name="radioAMFM" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="radio">Radio AM-FM</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="display" name="display" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="display">Display</label>
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="ac" name="ac" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="ac">Air Conditioning</label>
+
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <input class="form-check-input" type="checkbox" id="cd" name="cd" autofocus="autofocus"/>
+                                    <label class="form-check-label rounded" for="cd">CD Player</label>
+
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </main>
+
+
+
+    </div>
+
+    <!-- Button to trigger CAR SUBSCRIPTION MODAL -->
+    <button id="buttonSuccessModal" type="button" style="display: none" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#successModal">
+        Launch car subscrition modal
+    </button>
+
+    <!-- modal to display success message when user subscribe for a car -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-success text-white">
+                <div class="modal-header">
+                    <button type="button" id="closeSuccessModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <h5 class="modal-title" id="descriptionModalLabel">All has been executed correctly!</h5>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TODO REVIEWS MODAL -->
+
+
+
+    <!-- modal to display success message when user subscribe for a car -->
+    <div class="modal fade" id="reviewsModal" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <div class="row">
+                        <h1 class="fs-2">Reviews</h1>
+                        <div class="row">
+                            <h1 class="fs-5" id="revAvg" style="display: none">Average: </h1>
+                            <h1 class="fs-5" id="revNum" style="display: none">Total: </h1>
+                        </div>
+                    </div>
+
+
+
+                    <button type="button" id="closeReviewsModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body" id="modalBodyReviews">
+
+                    <h2 class="fs-3" id="noReviews" style="display: none">This car has not yet been rated!</h2>
+                    <!--<div class="row border-bottom">
+                        <div class="col">
+                            <p>Average: </p>
+                        </div>
+
+                        <div class="col">
+                            <p id="reviewsAvg"> 3</p>
+                        </div>
+                    </div>-->
+
+
+                    <!-- HERE REVIEWS -->
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- page loader -->
+    <div id="overlayLoader" class="overlay d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+
+</main>
+
+
+
+
+
+
+<script src="/js/cookie.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+server:
+  port: 9007
+  error:
+    include-message: always
+    include-binding-errors:
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: notification-service
+  rabbitmq:
+    username: guest
+    password: guest
+    addresses: rabbitmq:5672
+
+rabbitmq:
+  message-queue: car_subscription_queue
+  message-exchange: car_subscription_exchange
+  mq-routing-key: 123456789

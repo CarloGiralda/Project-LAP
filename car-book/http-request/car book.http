@@ -1,0 +1,61 @@
+### send post request
+POST http://localhost:9005/reservation/book
+Content-Type: application/json
+Logged-in-User: test2@gmail.com
+
+{
+    "cid": "2",
+    "madeDate": "11-11-2022",
+    "username": "test1@gmail.com",
+    "fromDay": "07-02-2024",
+    "toDay": "09-02-2024",
+    "fromHour": "10:00",
+    "toHour":  "20:00",
+    "description":  "description"
+
+}
+
+### send post request
+POST http://localhost:9005/reservation/extendBooking
+Content-Type: application/json
+Logged-in-User: test1@gmail.com
+
+{
+  "bid": 1,
+  "cid": 2,
+  "toDay": "05-02-2024",
+  "toHour": "12:00"
+
+}
+
+
+### subscribe cars for user
+POST http://localhost:9005/subscription/subscribeCarsForUser
+Content-Type: application/json
+
+{
+  "userId": "test1@gmail.com",
+  "carsId": [1,2,3,4]
+}
+
+
+### send post request to subcribe a user 1
+POST http://localhost:9005/subscription/car/2
+Logged-in-User: test1@gmail.com
+
+### list of subscribed user for car with id 5
+GET http://localhost:9005/subscription/getSubscribedUser/1
+
+### list of subscribed cars by user id
+GET http://localhost:9005/subscription/getCarsForUser/giralda.1903088@studenti.uniroma1.it
+
+### check car is available by id
+GET http://localhost:9005/reservation/getCarAvailability/2
+
+### get booking history if expired
+GET http://localhost:9005/reservation/listBookingsHistory
+Logged-in-User: test1@gmail.com
+
+### Delete subscription for a car
+DELETE http://localhost:9005/subscription/deleteSub/1
+Logged-in-User: test1@gmail.com

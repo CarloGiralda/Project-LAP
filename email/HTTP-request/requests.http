@@ -1,0 +1,46 @@
+### Send POST payment
+POST http://localhost:9001/email/sendPaymentEmail
+Content-Type: application/json
+
+{
+  "senderUsername": "gabriele.lerani2000@gmail.com",
+  "receiverUsername": "test1@gmail.com",
+  "price": 100
+}
+
+### Send POST car booked
+POST http://localhost:9001/email/sendCarBookedEmail
+Content-Type: application/json
+
+{
+  "cid": 129239,
+  "renterUsername": "gabriele.lerani2000@gmail.com",
+  "searcherUsername": "test1@gmail.com"
+}
+
+### Send POST confirmation email
+POST http://localhost:9001/email/sendEmail
+Content-Type: application/json
+
+{
+  "firstName": "test",
+  "lastName": "test",
+  "email": "gabriele.lerani2000@gmail.com",
+  "password": "password",
+  "confirmationToken": "token"
+}
+
+
+### Send POST confirmation email
+POST http://localhost:9001/email/sendZoneSubscriptionEmail
+Content-Type: application/json
+
+{
+  "to": "gabriele.lerani2000@gmail.com",
+  "cid": "1"
+}
+
+
+### Send POST recovery email
+POST http://localhost:9001/email/recovery?email=gabriele.lerani2000@gmail.com
+Content-Type: application/json

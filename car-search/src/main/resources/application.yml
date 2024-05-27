@@ -1,0 +1,30 @@
+server:
+  port: 9003
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: CARSEARCH-SERVICE
+  datasource:
+    username: postgres
+    password: password
+    url: jdbc:postgresql://localhost:5432/postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  rabbitmq:
+    username: guest
+    password: guest
+    addresses: localhost:5672
+  mvc:
+    converters:
+      preferred-json-mapper: gson

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Homepage</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+
+    <link style="style.css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <!-- custom css importing-->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+    <link rel="stylesheet" href="/css/features.css">
+
+
+
+    <script type="module" src="/js/homepage.js"></script>
+    <script src="/js/cookie.js"></script>
+    <script src="/js/Chat/chatRequest.js"></script>
+    <script src="/js/CarInsertion/listInsertedCars.js"></script>
+    <script src="/js/createHomeCard.js"></script>
+    <script src="/js/CarBook/listCarSubscription.js"></script>
+    <script src="/js/CarBook/listCarReservations.js"></script>
+    <script src="/js/Area/listZoneSubscription.js"></script>
+    <style>
+        .b-example-divider {
+            width: 100%;
+            height: 2rem;
+            background-color: rgba(117, 114, 114, 0.1);
+            border: solid rgba(136, 113, 113, 0.15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .alert {
+            opacity: 0;
+            transition: opacity 0.15s ease-in-out; /* Adjust the duration and easing function as needed */
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 6vw;
+            object-fit: cover;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- START OF HEADER COMPONENTS
+---------------------------------------
+-->
+
+<header>
+    <!-- create navigation bar (header) -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+        <div class="container-fluid">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+                <div class="navbar-nav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/" id="home">Home</a>
+                        </li>
+
+                        <!-- Conditionally show links if user is not logged-in -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/registration" id="signupLink">Sign-up</a>
+                        </li>
+                        <li class="nav-item" >
+                            <a class="nav-link" href="/login" id="loginLink">Login</a>
+                        </li>
+
+                        <!-- Conditionally show links if user is logged-in -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/chat/page" id="chatLink">Chat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/carinsert/insertoffer" id="carInsertion">Insert</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="/searchbar" id="search" style="display: none">Search</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+            <!-- User account and notification menu dropdown -->
+            <div class="navbar-collapse justify-content-end" id="navbarNavDarkDropdown">
+
+                <ul class="navbar-nav d-flex flex-row me-1">
+
+                    <!-- Notification dropdown menu -->
+                    <li id="notificationDropdown" class="nav-item me-3 me-lg-0 dropdown" style="display: block">
+                        <a id ="bellLink" class="me-3 btn btn-dark rounded-4" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell"></i>
+                            <span id="notificationBell" class="badge rounded-pill badge-notification bg-danger" style="display: compact"></span>
+                        </a>
+
+                        <ul id="NotificationList" class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark hidden-arrow animate slideIn">
+                            <!-- Add dynamic content for notifications -->
+
+                        </ul>
+                    </li>
+                </ul>
+
+
+                <ul class="navbar-nav">
+
+                    <li id="userDropDown" class="nav-item dropdown" style="display: block">
+                        <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span style="color: #ff9900;" id="usernameDisplay">User</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark animate slideIn">
+
+                            <li><a class="dropdown-item" href="/userSettings">User settings</a></li>
+
+                            <li><a class="dropdown-item" href="/login?loggedOut=true">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+</header>
+
+
+<!-- START OF MAIN COMPONENTS
+---------------------------------------
+-->
+
+<main>
+
+    <!-- Car subscriptions, booking history carousels only if LOGGED IN-->
+    <div class="my-5" style="display: block" id = "itemsCarousels">
+
+        <!-- CAR SUBSCRIPTIONS -->
+        <div class="p-5 text-center bg-body-tertiary">
+            <div class="container py-5">
+                <h1 class="text-body-emphasis">Car subscriptions</h1>
+                <p class="col-lg-8 mx-auto lead">
+                    Here you can find the list of cars for which you are subscribed to receive notifications
+                </p>
+
+                <p class="col-lg-8 mx-auto lead" style="display: none" id="subscriptionsError">
+                    <!-- Automatically filled with dynamic content -->
+                </p>
+
+
+                <!-- SEARCH CAR BUTTON -->
+                <div class="d-inline-flex gap-2 mb-5">
+                    <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button" onclick="window.location.href='http://localhost:8081/searchbar'">
+                        Search a car
+                    </button>
+                </div>
+
+                <div class="container-fluid gap-2 mb-5" style="width: 200px">
+
+                    <div id="successSubDelete" class="alert alert-success mt-3 rounded-pill" style="display:none;">
+                        Done!
+                    </div>
+
+                    <div id="errorSubDelete" class="alert alert-danger mt-3" style="display:none;">
+
+                    </div>
+                </div>
+
+
+
+                <!--TODO HIDE-->
+                <div class="multiple-card-slider" style="display: block" id="subscriptionsSlider">
+                    <div id="carouselExampleControls1" class="carousel" data-bs-ride="false">
+                        <div class="carousel-inner" id="carouselSubscriptions">
+
+                            <!--TODO DELETE-->
+<!--
+                            <div class="carousel-item active">
+                                <div class="card m-2">
+                                    <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
+                                    <div class="card-body">
+                                        <h5 class="card-title">Card title</h5>
+                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                        <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
+
+
+                                        <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button">
+                                            Delete subscription
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+-->
+
+
+
+                        </div>
+
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls1" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls1" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="b-example-divider"></div>
+
+        <!-- BOOKINGS -->
+        <div class="p-5 text-center bg-body-tertiary">
+            <div class="container py-5">
+                <h1 class="text-body-emphasis">Your reservations</h1>
+                <p class="col-lg-8 mx-auto lead">
+                    Book your car and see which reservations are still valid.
+                </p>
+
+                <p class="col-lg-8 mx-auto lead" style="display: none" id="reservationsError">
+                    <!-- Automatically filled with dynamic content -->
+                </p>
+
+
+                <!-- MOVE TO BOOKING HISTORY BUTTON -->
+                <div class="d-inline-flex gap-2 mb-5">
+                    <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button" onclick="window.location.href='http://localhost:8081/bookingHistory'">
+                        Booking history
+                    </button>
+                </div>
+
+                <div class="multiple-card-slider" style="display: none" id="reservationsSlider">
+                    <div id="carouselExampleControls2" class="carousel" data-bs-ride="false">
+                        <div class="carousel-inner" id="carouselReservations">
+
+                            <!--<div class="carousel-item">
+
+                                &lt;!&ndash; TODO Hide this card &ndash;&gt;
+                                <div class="card m-2">
+                                    <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
+                                    <div class="card-body">
+                                        <h5 class="card-title">Card title</h5>
+                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                        <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
+                                    </div>
+                                </div>
+
+                            </div>-->
+
+                        </div>
+
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="b-example-divider"></div>
+
+        <!-- INSERTED CAR -->
+        <div class="p-5 text-center bg-body-tertiary">
+            <div class="container py-5">
+                <h1 class="text-body-emphasis">Inserted car</h1>
+                <p class="col-lg-8 mx-auto lead">
+                    See your inserted car if you are the owner.
+                </p>
+
+                <p class="col-lg-8 mx-auto lead" style="display: none" id="insertedError">
+                    <!-- Automatically filled with dynamic content -->
+                </p>
+
+                <!-- MOVE TO BOOKING HISTORY BUTTON -->
+                <div class="d-inline-flex gap-2 mb-5">
+                    <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button" onclick="window.location.href='http://localhost:8081/carinsert/insertoffer'">
+                        Insert a new car
+                    </button>
+                </div>
+
+
+                <!--HIDE FOR EXECUTION-->
+                <div class="multiple-card-slider" style="display: none" id="insertedSlider">
+                    <div id="carouselExampleControls3" class="carousel" data-bs-ride="false">
+                        <div class="carousel-inner" id="carouselInserted">
+
+<!--
+                            <div class="carousel-item">
+                                <div class="card m-2">
+                                    <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
+                                    <div class="card-body">
+                                        <h5 class="card-title">Card title</h5>
+                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                        <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
+                                    </div>
+                                </div>
+                            </div>
+-->
+
+                        </div>
+
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls3" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls3" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="b-example-divider"></div>
+
+        <!-- ZONE SUBS -->
+        <div class="p-5 text-center bg-body-tertiary">
+            <div class="container py-5">
+                <h1 class="text-body-emphasis">Zone subscriptions</h1>
+                <p class="col-lg-8 mx-auto lead">
+                    Here you can find the list of zones for which you are subscribed to receive notifications.
+                </p>
+
+                <p class="col-lg-8 mx-auto lead" style="display: none" id="zoneSubsError">
+                    <!-- Automatically filled with dynamic content -->
+                </p>
+
+                <!-- MOVE TO BOOKING HISTORY BUTTON -->
+                <div class="d-inline-flex gap-2 mb-5">
+                    <button class="btn btn-outline-secondary btn-lg px-4 rounded-pill" type="button" onclick="window.location.href='http://localhost:8081/map'">
+                        Subscribe for a zone
+                    </button>
+                </div>
+
+                <div class="container-fluid gap-2 mb-5" style="width: 200px">
+
+                    <div id="successZoneSubDelete" class="alert alert-success mt-3 rounded-pill" style="display:none;">
+                        Done!
+                    </div>
+
+                    <div id="errorZoneSubDelete" class="alert alert-danger mt-3" style="display:none;">
+
+                    </div>
+                </div>
+
+
+
+                <!--HIDE FOR EXECUTION-->
+                <div class="multiple-card-slider" style="display: none" id="zoneSlider">
+                    <div id="carouselExampleControls4" class="carousel" data-bs-ride="false">
+                        <div class="carousel-inner" id="carouselZone">
+
+                            <!--
+                                                        <div class="carousel-item">
+                                                            <div class="card m-2">
+                                                                <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">Card title</h5>
+                                                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                                                    <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                            -->
+
+                        </div>
+
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls4" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls4" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- PREVIEW OF FEATURES ONLY IF USER NOT LOGGED IN -->
+    <div id="myCarousel" class="carousel slide mb-6" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+
+        </div>
+
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/img/home-carousel/car-2.jpg" class="bd-placeholder-img" aria-hidden="true"  alt="car">
+                <div class="container">
+                    <div class="carousel-caption text-start">
+                        <h1>Enjoy our application</h1>
+                        <p class="opacity-90">Are you not registered yet? Do it in a few steps.</p>
+                        <p><a class="btn btn-lg btn-primary" href="/registration">Sign up</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="/img/home-carousel/car.jpg" class="bd-placeholder-img" aria-hidden="true"  alt="car">
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h1>Login if you are already with us.</h1>
+                        <p class="opacity-90">Starts looking for a car and renting it.</p>
+                        <p><a class="btn btn-lg btn-primary" href="/login">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+
+    <!-- SERVICES PRESENTATION -->
+    <div class="container px-4 py-5" style="border: none; border-radius: 0; padding: 0; text-align: left; display: block; flex-direction: row; justify-content: flex-start" id="featured-3">
+
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3 ">
+            <div class="feature col mb-3">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                    <img class="bi" width="82px" height="82px" src="/img/icons/car-rent.png" alt="">
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Easy car rent</h3>
+                <a href="#scrollCarRentHeading" class="icon-link">
+                    More details
+                </a>
+            </div>
+
+            <div class="feature col mb-3">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                    <img class="bi" width="82px" height="82px" src="/img/icons/mining.png" alt="" />
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Safe payment system</h3>
+
+                <a href="#scrollPaymentHeading" class="icon-link">
+                    More details
+                </a>
+            </div>
+            <div class="feature col mb-3">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                    <img class="bi" width="82px" height="82px" src="/img/icons/notification-bell.png" alt="" />
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Real time notification</h3>
+
+                <a href="#scrollNotificationHeading" class="icon-link">
+                    More details
+                </a>
+            </div>
+
+            <div class="feature col mb-3">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                    <img class="bi" width="82px" height="82px" src="/img/icons/chat-bubbles.png" alt="" />
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Chat with your renter</h3>
+
+                <a href="#scrollChatHeading" class="icon-link">
+                    More details
+
+                </a>
+            </div>
+
+            <div class="feature col mb-3">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                    <img class="bi" width="82px" height="82px" src="/img/icons/destination.png" alt="" />
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Receives message for a zone</h3>
+
+                <a href="#scrollZoneHeading" class="icon-link">
+                    More details
+                </a>
+            </div>
+
+            <div class="feature col mb-3">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+                    <img class="bi" width="82px" height="82px" src="/img/icons/star.png" alt="" />
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Give your feedback</h3>
+
+                <a href="#scrollFeedbackHeading" class="icon-link">
+                    More details
+                </a>
+            </div>
+
+        </div>
+
+        <hr class="featurette-divider">
+
+        <!--START FEATURES DESCRIPTION-->
+        <div class="row featurette">
+            <div class="col-md-7">
+                <h2 class="featurette-heading fw-normal lh-1" id="scrollCarRentHeading">Easy car book. <span class="text-body-secondary">It’ll blow your mind.</span></h2>
+                <p class="lead">Effortlessly book your ideal ride with our user-friendly interface. Enjoy a seamless car rental experience, from selection to confirmation, making your journey hassle-free. Additionally, take control by listing your car for rent or finding the perfect rental from fellow users, whether you're the owner or the renter, our platform caters to both roles seamlessly.</p>
+            </div>
+            <div class="col-md-5">
+                <img src="/img/features/car-rent.jpeg" alt="car rent" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img">
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+
+
+        <div class="row featurette">
+            <div class="col-md-7 order-md-2">
+                <h2 class="featurette-heading fw-normal lh-1" id="scrollPaymentHeading">Safe payment system. <span class="text-body-secondary">Blockchain is the way.</span></h2>
+                <p class="lead">Rest easy with our secure payment system, backed by blockchain architecture. Your transactions are cryptographically protected, ensuring a tamper-proof and transparent process. Your safety is our priority.</p>
+            </div>
+            <div class="col-md-5 order-md-1">
+                <img src="/img/features/blockchain-car.jpeg" alt="car rent" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img">
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette">
+            <div class="col-md-7">
+                <h2 class="featurette-heading fw-normal lh-1 " id="scrollNotificationHeading">Real-time notification. <span class="text-body-secondary">Always stay updated.</span></h2>
+                <p class="lead">Stay informed instantly! Receive real-time updates on vehicle availability, and important alerts. Experience the convenience of timely notifications at every step.</p>
+            </div>
+            <div class="col-md-5">
+                <img src="/img/features/notification.jpeg" alt="car rent" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img">
+
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette">
+            <div class="col-md-7 order-md-2">
+                <h2 class="featurette-heading fw-normal lh-1" id="scrollChatHeading">Chat. <span class="text-body-secondary">Ask for what you need.</span></h2>
+                <p class="lead">Connect effortlessly with your renter through our integrated chat feature. Discuss details, ask questions, and receive quick responses, fostering clear communication for a smoother rental experience.</p>
+            </div>
+            <div class="col-md-5 order-md-1">
+                <img src="/img/features/chat.jpeg" alt="car rent" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img">
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette">
+            <div class="col-md-7">
+                <h2 class="featurette-heading fw-normal lh-1" id="scrollZoneHeading">Zone subscription. <span class="text-body-secondary">Location makes the difference.</span></h2>
+                <p class="lead">Tailored communication at your fingertips! Receive messages specific to your chosen zones, ensuring you stay informed about cars availability.</p>
+            </div>
+            <div class="col-md-5">
+                <img src="/img/features/zone.jpeg" alt="car rent" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img">
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row featurette">
+            <div class="col-md-7 order-md-2">
+                <h2 class="featurette-heading fw-normal lh-1" id="scrollFeedbackHeading">Give your feedback. <span class="text-body-secondary">Rate your experience.</span></h2>
+                <p class="lead">Your opinion matters! Share your valuable feedback with us to help us enhance our services. Your input contributes to the improvement of our car rental platform, creating a better experience for all.</p>
+            </div>
+            <div class="col-md-5 order-md-1">
+                <img src="/img/features/feedback.jpeg" alt="car rent" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" role="img">
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+    </div>
+</main>
+
+
+<!-- END CONTENT -->
+<footer class="container " style="border: none; border-radius: 0; padding-bottom: 3px; text-align: left; display: block; flex-direction: row; justify-content: flex-start">
+    <p class="float-end"><a href="#">Back to top</a></p>
+    <p>&copy; 2023–2024 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+</footer>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<script>
+    $(window).on('load', function() {
+        $('.multiple-card-slider .carousel').each(function(){
+            var currentCarouselId = '#' + $(this).attr('id');
+            const multipleItemCarousel = document.querySelector(currentCarouselId);
+
+            console.log(currentCarouselId,multipleItemCarousel)
+
+            if(window.matchMedia("(min-width:576px)").matches){
+                const carousel = new bootstrap.Carousel(multipleItemCarousel, {
+                    interval: false,
+                    wrap: false
+                });
+
+
+
+                const cardWidth = 304 // TODO HARDCODED
+
+                let scrollPosition = 0;
+
+                $(currentCarouselId + ' .carousel-control-next').on('click', function(){
+                    // Calculate carousel width
+                    const carouselWidth = $(currentCarouselId + ' .carousel-inner')[0].scrollWidth;
+
+                    // Retrieve card width dynamically by selecting the first carousel item
+                    /*const cardWidth = $(currentCarouselId + ' .carousel-item').first().width();*/
+
+
+                    // Retrieve card width dynamically by selecting the first carousel item
+                    console.log(carouselWidth,cardWidth,scrollPosition)
+                    if(scrollPosition < (carouselWidth - (cardWidth * 4))){
+                        scrollPosition = scrollPosition + cardWidth;
+                        $(currentCarouselId + ' .carousel-inner').animate({scrollLeft: scrollPosition},600);
+                    }
+                });
+                $(currentCarouselId + ' .carousel-control-prev').on('click', function(){
+                    // Calculate carousel width
+                    const carouselWidth = $(currentCarouselId + ' .carousel-inner')[0].scrollWidth;
+
+                    // Retrieve card width dynamically by selecting the first carousel item
+                    /*const cardWidth = $(currentCarouselId + ' .carousel-item').first().width();*/
+
+
+                    // Retrieve card width dynamically by selecting the first carousel item
+                    console.log(carouselWidth,cardWidth,scrollPosition)
+                    if(scrollPosition > 0){
+                        scrollPosition = scrollPosition - cardWidth;
+                        $(currentCarouselId + ' .carousel-inner').animate({scrollLeft: scrollPosition},600);
+                    }
+                });
+            } else {
+                $(multipleItemCarousel).addClass('slide');
+            }
+        });
+    });
+
+
+
+</script>
+
+
+</body>
+</html>

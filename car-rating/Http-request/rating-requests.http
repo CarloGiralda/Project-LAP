@@ -1,0 +1,11 @@
+### Send POST request with json body
+POST http://localhost:9004/carrating/create
+Content-Type: application/json
+
+{
+  "stars": 4,
+  "date": "2024-02-26",
+  "description": "Great car, loved the experience!",
+  "madeByUser": "a",
+  "ratingOnCar": 1
+}

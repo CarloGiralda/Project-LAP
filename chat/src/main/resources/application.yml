@@ -1,0 +1,30 @@
+server:
+  port: 9006
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: chat-service
+  datasource:
+    username: postgres
+    password: password
+    url: jdbc:postgresql://localhost:5432/postgres
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+broker:
+  relay:
+    host: ${BROKER_HOST:localhost}
