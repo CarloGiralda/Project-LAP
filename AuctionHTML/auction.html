@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raft Consensus Demo</title>
+    <script src="/js/Auction/auction.js"></script>
+    <script>
+        // TODO insert list of peers so init of the auction before this call
+        // peer node
+        const node1 = new RaftNode(1, [2, 3]);
+
+        // Function to send value to Raft cluster
+        function sendValue() {
+          const value = document.getElementById('value').value;
+          // Client sends value to the leader node
+          node1.appendEntries(value);
+        }
+
+        // TODO display something when auction and consensus ended
+    </script>
+</head>
+<body>
+<h1>Raft Consensus Demo</h1>
+<p>Submit a value to be agreed upon by the Raft cluster:</p>
+<form>
+    <input type="text" id="value" placeholder="Enter value">
+    <button type="button" onclick="sendValue()">Submit</button>
+</form>
+<button type="button" onclick="checkConsensus()">Check Consensus</button>
+</body>
+</html>
