@@ -6,44 +6,28 @@ const states = {
   LEADER: 'LEADER'
 };
 
-// Define a global variable for message structure
-const RaftMessage = {
-  types: {
+const types = {
     APPEND_ENTRIES: 'AppendEntries',
-    APPEND_ENTRIES: 'AppendEntriesAck',
+    APPEND_ENTRIES_ACK: 'AppendEntriesAck',
     REQUEST_VOTE: 'RequestVote',
-    REQUEST_VOTE_RESPONSE: 'RequestVoteAck',
-    APPEND_ENTRIES: 'Heartbeat',
-    APPEND_ENTRIES: 'HeartbeatAck',
+    REQUEST_VOTE_ACK: 'RequestVoteAck',
+    HEARTBEAT: 'Heartbeat',
+    HEARTBEAT_ACK: 'HeartbeatAck',
+    COMMIT: 'Commit',
+    COMMIT_ACK: 'CommitAck',
     // Add more message types as needed
-  },
-  create: function(type, term, leaderId, prevLogIndex, prevLogTerm, entries, leaderCommit) {
-    return {
-      type: type,
-      term: term,
-      leaderId: leaderId,
-      prevLogIndex: prevLogIndex,
-      prevLogTerm: prevLogTerm,
-      entries: entries,
-      leaderCommit: leaderCommit
-    };
-  }
 };
+
 
 class RaftNode {
   constructor(id, peers) {
     this.id = id;
     this.peers = peers;
-    this.sockets = {};
     this.currentTerm = 0;
     this.votedFor = null;
     this.log = [];
     this.state = states.FOLLOWER;
     this.leaderId = null;
-    this.commitIndex = 0;
-    this.lastApplied = 0;
-    this.nextIndex = {};
-    this.matchIndex = {};
     this.votes = {};
     this.totalNodes = this.peers.length + 1;
 
@@ -120,7 +104,7 @@ class RaftNode {
     });
   }
 
-   sendMessage(peer, message) {
+   send(peer, message) {
       // Send message to a peer
       const socket = this.sockets[peer];
       if (socket) {
@@ -169,41 +153,61 @@ class RaftNode {
     for (const peer of this.peers) {
       // Simulated RequestVote RPC to all other nodes
 
-      // TODO is dummy
-      const message = RaftMessage.create(
-        RaftMessage.types.APPEND_ENTRIES,
-        2,
-        'node1',
-        5,
-        1,
-        [],
-        5
-      );
-      this.send(peer,message)
-      const voteGranted = this.onReceiveVoteResponse(peer, this.currentTerm);
-      if (voteGranted) {
-        votesReceived++;
-        if (votesReceived > totalNodes / 2) {
-          // Received majority of votes, become leader
-          this.becomeLeader();
-          return;
+      const raftMessage = {
+        sender: this.id,
+        messageType: types.REQUEST_VOTE,
+        data: {
+          term: this.currentTerm,
+          entries: []
         }
-      }
+      };
+
+      const jsonMessage = JSON.stringify(raftMessage);
+      this.send(peer,jsonMessage)
     }
   }
+
+  onReceiveVote(peer, term) {
+      if (term < this.currentTerm) {
+        return false;
+      }
+      if (this.votedFor === null) {
+        this.votedFor = peer;
+        this.votes[peer]++;
+        if (this.votes[peer] > totalNodes / 2) {
+          // Received majority of votes, become leader
+          this.leader=peer;
+        }
+        this.stopElectionTimeout();
+        this.startElectionTimeout();
+        const raftMessage = {
+                    sender: this.id,
+                    messageType: types.REQUEST_VOTE_ACK,
+                    data: {
+                      term: this.currentTerm,
+                      entries: []
+                    }
+                  };
+
+           const jsonMessage = JSON.stringify(raftMessage);
+           this.send(peer,jsonMessage);
+
+      }
+
+    }
 
   onReceiveVoteResponse(peer, term) {
     if (term < this.currentTerm) {
       return false;
     }
-    if (this.votedFor === null || this.votedFor === peer) {
-      this.votedFor = peer;
-      this.votes[id]++;
-      if (votesReceived > totalNodes / 2) {
-        // Received majority of votes, become leader
-        this.becomeLeader();
-      }
-    }
+
+   this.votes[this.id]++;
+  if (this.votes[this.id] > totalNodes / 2) {
+    // Received majority of votes, become leader
+    this.becomeLeader();
+  }
+
+
   }
 
   // LOG PART
@@ -228,6 +232,18 @@ class RaftNode {
     const leaderCommit = this.commitIndex;
     const success = this.sendAppendEntries(peer, this.currentTerm, prevLogIndex, prevLogTerm, entries, leaderCommit);
 
+    const raftMessage = {
+            sender: this.id,
+            messageType: types.HEARTBEAT,
+            data: {
+              term: this.currentTerm,
+              entries: entries
+            }
+          };
+
+   const jsonMessage = JSON.stringify(raftMessage);
+   this.send(peer,jsonMessage);
+
     if (success) {
       this.matchIndex[peer] = this.nextIndex[peer] + entries.length - 1;
       this.nextIndex[peer] += entries.length;
@@ -235,70 +251,124 @@ class RaftNode {
     }
   }
 
-  sendAppendEntries(peer, term, prevLogIndex, prevLogTerm, entries, leaderCommit) {
-    // Simulated AppendEntries RPC
-    // Here you would send RPC to peer and handle response
-    // For simplicity, let's assume the request always succeeds
-    const socket = this.sockets[peer];
-    if (socket) {
-      socket.send({
-        term,
-        prevLogIndex,
-        prevLogTerm,
-        entries,
-        leaderCommit
-      });
-      return true;
-    } else {
-      return false;
+    onReceiveHeartbeat(peer, term) {
+        if (term < this.currentTerm) {
+          return false;
+        }
+         this.leaderId = leaderId;
+      if (this.state !== states.FOLLOWER) {
+        // If not already a follower, become one
+        this.state = states.FOLLOWER;
+        this.stopElectionTimeout();
+        this.startElectionTimeout();
+      }
+        const raftMessage = {
+                    sender: this.id,
+                    messageType: types.HEARTBEAT_ACK,
+                    data: {
+                      term: this.currentTerm,
+                      entries: []
+                    }
+          };
+
+           const jsonMessage = JSON.stringify(raftMessage);
+           this.send(peer,jsonMessage);
+
+
+
+      }
+
+  onReceiveHeartbeatResponse(peer, term) {
+        if (term < this.currentTerm) {
+           return false;
+         }
+       //TODO  if message entry not null
+        this.log[0]['ack'].append(peer)
+       const val =this.log[0]['ack'].length
+       const value = this.log[0]['command']
+
+       if (val > totalNodes / 2) {
+
+        for (const peer of this.peers) {
+            // Simulated RequestVote RPC to all other nodes
+
+            // committed value
+                      const raftMessage = {
+                                 sender: this.id,
+                                 messageType: types.COMMIT,
+                                 data: {
+                                   term: this.currentTerm,
+                                   value: value
+                                 }
+                               };
+
+                        const jsonMessage = JSON.stringify(raftMessage);
+                        this.send(peer,jsonMessage);
+          }
+
+       }
+
     }
-  }
 
-  updateCommitIndex() {
-    const sortedMatchIndexes = Object.values(this.matchIndex).sort((a, b) => a - b);
-    const majorityMatchIndex = sortedMatchIndexes[Math.floor(sortedMatchIndexes.length / 2)];
-    if (majorityMatchIndex > this.commitIndex && this.log[majorityMatchIndex - 1].term === this.currentTerm) {
-      this.commitIndex = majorityMatchIndex;
-      this.applyLogEntries();
-    }
-  }
+      onReceiveHeartbeatCommitResponse(peer, term) {
+         // TODO send to user the value
 
-  applyLogEntries() {
-    for (let i = this.lastApplied + 1; i <= this.commitIndex; i++) {
-      // Apply log entries to state machine
-      // For simplicity, let's just log them for now
-      console.log(`Node ${this.id} applies log entry:`, this.log[i - 1].command);
-      this.lastApplied = i;
-    }
-  }
+        }
 
-  handleAppendEntries(command) {
-    if (this.state !== states.LEADER) {
-      // Only leader can accept client requests
-      console.log(`Node ${this.id} is not the leader. Cannot accept client request.`);
-      return;
-    }
+  sendAppendEntries(peer, term, prevLogIndex, prevLogTerm, entries, leaderCommit,command) {
 
-    // Append entry to leader's log
-    const entry = {
-      term: this.currentTerm,
-      command: command
-    };
-    this.log.push(entry);
+  // TODO when sending this? auction value bid
+   // Append entry to leader's log
+        const entry = {
+          term: this.currentTerm,
+          command: command,
+          ack:[]// only me
+        };
+        this.log.push(entry);
 
-    // Send log entry to followers on next heartbeat
+
     for (const peer of this.peers) {
-      this.sendHeartbeat(peer);
-    }
+       // Simulated RequestVote RPC to all other nodes
+
+     const raftMessage = {
+                         sender: this.id,
+                         messageType: types.APPEND_ENTRIES,
+                         data: {
+                           term: this.currentTerm,
+                           entries: entries
+                         },
+                         prevLogIndex: prevLogIndex,
+                         prevLogTerm:prevLogTerm,
+                         leaderCommit:leaderCommit
+               };
+
+                const jsonMessage = JSON.stringify(raftMessage);
+                this.send(peer,jsonMessage);
+     }
   }
 
-  receiveHeartbeat(leaderId) {
-    this.leaderId = leaderId;
-    if (this.state !== states.FOLLOWER) {
-      // If not already a follower, become one
-      this.state = states.FOLLOWER;
-      this.startElectionTimeout();
+    onReceiveAppendEntries(command) {
+      if (this.state !== states.LEADER) {
+        // Only leader can accept client requests
+        console.log(`Node ${this.id} is not the leader. Cannot accept client request.`);
+        return;
+      }
+
+      // Append entry to leader's log
+      const entry = {
+        term: this.currentTerm,
+        command: command
+      };
+      this.log.push(entry);
+
+      // Send log entry to followers on next heartbeat
+        this.sendHeartbeat(peer);
+
     }
-  }
+
+
+
+
+
 }
 
