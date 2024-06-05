@@ -20,91 +20,96 @@ const types = {
 
 
 class RaftNode {
-  constructor(id, peers) {
-    this.id = id;
-    this.peers = peers;
-    this.currentTerm = 0;
-    this.votedFor = null;
-    this.log = [];
-    this.state = states.FOLLOWER;
-    this.leaderId = null;
-    this.votes = {};
-    this.totalNodes = this.peers.length + 1;
+      constructor(id, peers) {
+            this.id = id;
+            this.peers = peers;
+            this.currentTerm = 0;
+            this.votedFor = null;
+            this.log = [];
+            this.state = states.FOLLOWER;
+            this.leaderId = null;
+            this.votes = {};
+            this.totalNodes = this.peers.length + 1;
 
 
-    for (const peer of this.peers) {
-      this.nextIndex[peer] = 1;
-      this.matchIndex[peer] = 0;
-    }
+            for (const peer of this.peers) {
+              this.nextIndex[peer] = 1;
+              this.matchIndex[peer] = 0;
+            }
 
-    this.connectToPeers();
-    this.startElectionTimeout();
-  }
-
-  // CONNECTION PART
-
-      connectToPeers() {
-        for (const peer of this.peers) {
-          const conn = new Peer();
-          conn.on('open', () => {
-            console.log(`Connected to peer ${peer}`);
-            this.sockets[peer] = conn;
-            this.setupSocketListeners(conn);
-          });
-          conn.on('error', (error) => {
-            console.error(`Error connecting to peer ${peer}:`, error);
-          });
-        }
+            this.connectToPeers();
+            this.startElectionTimeout();
       }
 
-    setupSocketListeners(conn) {
-      conn.on('data', (data) => {
-        // Handle incoming data from peer
-        console.log(`Received data from ${conn.peer}:`, data);
+      // CONNECTION PART
+      connectToPeers() {
+            for (const peer of this.peers) {
+                  // Initialize PeerJS
+                  const conn = new Peer();
 
-        // Parse the incoming message
-        const { messageType, messageData } = data;
+                  conn.on('open', () => {
+                    console.log(`Connected to peer ${peer}`);
+                    this.sockets[peer] = conn;
+                    this.setupSocketListeners(conn);
+                  });
 
-        // Implement Raft consensus algorithm based on message type
-        switch (messageType) {
-          case 'AppendEntries':
-            // TODO
-            break;
-          case 'AppendEntriesAck':
-            // TODO
-            break;
-          case 'RequestVote':
-            // TODO
-            break;
-          case 'RequestVoteAck':
-            // TODO
-            break;
-          case 'Heartbeat':
-              // TODO
-              break;
-          case 'HeartBeatAck':
-              // TODO
-              break;
+                  conn.on('connection', (conn) => {
+                    conn.on('data', handleMessage);
+                  });
 
-          // Add more cases for other message types
-          default:
-            console.log('Unknown message type:', messageType);
-        }
-      });
-    }
+                  conn.on('error', (error) => {
+                    console.error(`Error connecting to peer ${peer}:`, error);
+                  });
+            }
+      }
 
-    conn.on('close', () => {
-      // Handle peer disconnection
-      console.log(`Peer ${conn.peer} disconnected`);
-    });
+      handleMessage(conn) {
+            conn.on('data', (data) => {
+                // Handle incoming data from peer
+                console.log(`Received data from ${conn.peer}:`, data);
 
-    conn.on('error', (error) => {
-      // Handle socket error
-      console.error(`Socket error with peer ${conn.peer}:`, error);
-    });
-  }
+                // Parse the incoming message
+                const {messageType, messageData} = data;
 
-   send(peer, message) {
+                // Implement Raft consensus algorithm based on message type
+                switch (messageType) {
+                    case 'AppendEntries':
+                        // TODO
+                        break;
+                    case 'AppendEntriesAck':
+                        // TODO
+                        break;
+                    case 'RequestVote':
+                        // TODO
+                        break;
+                    case 'RequestVoteAck':
+                        // TODO
+                        break;
+                    case 'Heartbeat':
+                        // TODO
+                        break;
+                    case 'HeartBeatAck':
+                        // TODO
+                        break;
+
+                    // Add more cases for other message types
+                    default:
+                        console.log('Unknown message type:', messageType);
+                }
+            });
+
+            conn.on('close', () => {
+                // Handle peer disconnection
+                console.log(`Peer ${conn.peer} disconnected`);
+            });
+
+            conn.on('error', (error) => {
+                // Handle socket error
+                console.error(`Socket error with peer ${conn.peer}:`, error);
+            });
+      }
+
+    send(peer, message) {
       // Send message to a peer
       const socket = this.sockets[peer];
       if (socket) {
@@ -365,10 +370,5 @@ class RaftNode {
         this.sendHeartbeat(peer);
 
     }
-
-
-
-
-
 }
 
