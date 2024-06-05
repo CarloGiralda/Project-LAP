@@ -58,7 +58,7 @@ class RaftNode {
                   });
 
                   conn.on('error', (error) => {
-                    console.error(`Error connecting to peer ${peer}:`, error);
+                    console.error(`Error connecting to peer ${peer}: `, error);
                   });
             }
       }
