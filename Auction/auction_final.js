@@ -1,10 +1,12 @@
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
-      const ids = ['node1'];
-      const peersIds = ['node2', 'node3'];// fetch from server
-      const bid = '3';// fetch from user
-      const raftNode = new RaftNode(ids, peersIds, bid);
-      console.log('RaftNode initialized:', raftNode);
+      const ids = document.getElementById('id').textContent;
+      const peersIds = document.getElementById('peers').textContent;// fetch from server
+      document.getElementById('button').addEventListener('click',() => {
+          const bid = document.getElementById('bid').textContent;// fetch from user
+          const raftNode = new RaftNode(ids, peersIds, bid);
+          console.log('RaftNode initialized:', raftNode);
+      });
 });
 
 // STRUCTURES
