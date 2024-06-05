@@ -73,28 +73,25 @@ class RaftNode {
                 // Handle incoming data from peer
                 console.log(`Received data from ${conn.peer}:`, data);
         
-                // Parse the incoming message
-                const { messageType, messageData } = data;
-        
                 // Implement Raft consensus algorithm based on message type
-                switch (messageType) {
-                  case 'AppendEntries':
-                    // TODO
-                    break;
-                  case 'AppendEntriesAck':
-                    // TODO
-                    break;
+                switch (data['messageType']) {
                   case 'RequestVote':
-                    // TODO
+                    onReceiveVote(data);
                     break;
                   case 'RequestVoteAck':
-                    // TODO
+                    onReceiveVoteResponse(data);
                     break;
                   case 'Heartbeat':
-                      // TODO
+                      onReceiveHeartbeat(data);
                       break;
                   case 'HeartBeatAck':
-                      // TODO
+                      onReceiveHeartbeatResponse(data);
+                      break;
+                  case 'Commit':
+                      onReceiveHeartbeatCommit(data);
+                      break;
+                  case 'CommitAck':
+                      onReceiveHeartbeatCommitResponse(data);
                       break;
         
                   // Add more cases for other message types
@@ -195,7 +192,7 @@ class RaftNode {
       }
     }
 
-  onReceiveVoteResponse(peer, term) {
+  onReceiveVoteResponse(message) {
     if (term < this.currentTerm) {
         return false;
     }
@@ -281,8 +278,31 @@ class RaftNode {
      }
     }
 
+  onReceiveHeartbeatCommit(message) {
+      const peer = message['sender'];
+      const term = message['term'];
+      const value = message['value'];
+      if (term < this.currentTerm) {
+           return false;
+       }
+      // committed value
+      const raftMessage = {
+          sender: this.id,
+          messageType: types.COMMIT_ACK,
+          data: {
+              term: this.currentTerm,
+              value: value
+          }
+      };
+
+      const jsonMessage = JSON.stringify(raftMessage);
+      this.send(peer,jsonMessage);
+      console.log('Final Value', value);
+      document.getElementById('result').textContent = value;
+  }
+
   onReceiveHeartbeatCommitResponse(message) {
-    console.log('Final Value', data);
+    console.log('Final Value', value);
     document.getElementById('result').textContent = data;
   }
 }
