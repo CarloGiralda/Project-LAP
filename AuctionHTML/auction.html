@@ -6,28 +6,53 @@
     <title>Raft Consensus Demo</title>
     <script src="/js/Auction/auction.js"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-    <script>
-        // TODO insert list of peers so init of the auction before this call
-        // peer node
-        const node1 = new RaftNode(1, [2, 3]);
-
-        // Function to send value to Raft cluster
-        function sendValue() {
-          const value = document.getElementById('value').value;
-          // Client sends value to the leader node
-          node1.appendEntries(value);
+    <style>
+        #bid-form {
+            display: none; /* Initially hide the bid form */
         }
 
-        // TODO display something when auction and consensus ended
-    </script>
+          .progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <h1>Raft Consensus Demo</h1>
-<p>Submit a value to be agreed upon by the Raft cluster:</p>
-<form>
-    <input type="text" id="value" placeholder="Enter value">
-    <button type="button" onclick="sendValue()">Submit</button>
+
+<!-- Form with id 'id' -->
+<form id="id-form">
+    <button type="button" id="subButton">Subscribe to auction</button>
 </form>
-<button type="button" onclick="checkConsensus()">Check Consensus</button>
+
+<!-- Form with id 'bid' -->
+<form id="bid-form">
+    <input type="text" id="bid" placeholder="Enter Bid">
+    <button type="bidButton">Submit Bid</button>
+</form>
+
+
+<!-- Hidden Input Fields -->
+<p  id="status">
+<input type="text" id="myPeer" hidden>
+
+
+<!-- Progress Bar -->
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar">100%</div>
+</div>
+
 </body>
 </html>
