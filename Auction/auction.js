@@ -340,7 +340,7 @@ class RaftNode {
 
       if (this.acks > totalNodes / 2) {
 
-        this.finalValue = Math.min(...this.log),
+        this.finalValue = Math.min(...this.log)
 
         for (const peer of this.peers) {
             // committed value

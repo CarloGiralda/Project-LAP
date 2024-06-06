@@ -1,0 +1,67 @@
+package com.example.Auction_service.controller;
+
+import com.example.Auction_service.model.Request;
+import com.example.Auction_service.model.dto.AuctionDto;
+import com.example.Auction_service.model.dto.SubscribeDto;
+import com.example.Auction_service.service.AuctionService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+
+@Slf4j
+@AllArgsConstructor
+@RequestMapping(path = "/auction")
+@RestController
+public class AuctionController {
+
+    private final AuctionService auctionService;
+
+    @PostMapping(path = "/subscribe")
+    @ResponseBody
+    public ResponseEntity<String> subscribe(@RequestBody SubscribeDto request, @RequestHeader("Logged-In-User") String username){
+        try {
+            auctionService.subscribeToAuction(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Request completed");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/create")
+    @ResponseBody
+    public ResponseEntity<String> createAuction(@RequestBody AuctionDto request, @RequestHeader("Logged-In-User") String username){
+        try {
+
+            auctionService.saveAuction(request);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Request completed");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/get_peer_list")
+
+    public ResponseEntity<?> readPeerList(@RequestParam("auctionId") Long auctionId, @RequestHeader("Logged-In-User") String username){
+        try {
+
+            List<String> peers =  auctionService.getPeers(auctionId);
+
+            if (peers.isEmpty()){
+                return ResponseEntity.status(HttpStatus.OK).body("List is empty");
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.OK).body(peers);
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+}
