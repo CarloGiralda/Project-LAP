@@ -107,7 +107,7 @@ const types = {
     HEARTBEAT_ACK: 'HeartbeatAck',
     COMMIT: 'Commit',
     COMMIT_ACK: 'CommitAck',
-    // Add more message types as needed
+    APPEND: 'Append',
 };
 
 class RaftNode {
@@ -126,6 +126,7 @@ class RaftNode {
     this.totalNodes = this.peers.length + 1;
     this.connectToPeers();
     this.startElectionTimeout();
+    this.finalValue = null;
    }
 
   // CONNECTION LAYER
@@ -149,6 +150,10 @@ class RaftNode {
         
                 // Implement Raft consensus algorithm based on message type
                 switch (data['messageType']) {
+                  case 'RequestVote': // ADDED TO THE PROTOCOL TO BROADCAST VALUES FOR BIDS
+                    const entries = message['entries'];
+                    this.log = [...new Set([...this.log,...entries])];
+                    break;
                   case 'RequestVote':
                     onReceiveVote(data);
                     break;
@@ -317,7 +322,7 @@ class RaftNode {
                     messageType: types.HEARTBEAT_ACK,
                     data: {
                       term: this.currentTerm,
-                      entries: this.log
+                      entries: []
                     }
       };
       const jsonMessage = JSON.stringify(raftMessage);
@@ -335,6 +340,8 @@ class RaftNode {
 
       if (this.acks > totalNodes / 2) {
 
+        this.finalValue = Math.min(...this.log),
+
         for (const peer of this.peers) {
             // committed value
           const raftMessage = {
@@ -342,7 +349,7 @@ class RaftNode {
                      messageType: types.COMMIT,
                      data: {
                        term: this.currentTerm,
-                       value: Math.min(...this.log)
+                       value: this.finalValue
                      }
            };
 
@@ -365,19 +372,18 @@ class RaftNode {
           messageType: types.COMMIT_ACK,
           data: {
               term: this.currentTerm,
-              value: value
           }
       };
-
+      this.finalValue = value;
       const jsonMessage = JSON.stringify(raftMessage);
       this.send(peer,jsonMessage);
-      console.log('Final Value', value);
-      document.getElementById('result').textContent = value;
+      console.log('Final Value', this.finalValue);
+      document.getElementById('value').textContent = this.finalValue;
   }
 
   onReceiveHeartbeatCommitResponse(message) {
-    console.log('Final Value', value);
-    document.getElementById('result').textContent = data;
+    console.log('Final Value', this.finalValue);
+    document.getElementById('value').textContent = this.finalValue;
   }
 }
 
