@@ -88,8 +88,8 @@ Once the application is set up and running, you can access the frontend through 
 | **Notification**      | Sends notifications for car availability         | 9007  |
 | **Select Area**       | Manages area selection for geolocation           | 9008  |
 | **Payment Service**   | Manages payment transactions                     | 9010  |
-| **Blockchain**        | Manages blockchain transactions                  | 9011  |
-| **Blockchain2**       | Secondary blockchain service                     | 9012  |
+| **Blockchain (miner 1)**        | Manages blockchain transactions                  | 9011  |
+| **Blockchain2 (miner 2)**       | Secondary blockchain service                     | 9012  |
 
 
 Each service is independently deployable and can be scaled based on demand.
