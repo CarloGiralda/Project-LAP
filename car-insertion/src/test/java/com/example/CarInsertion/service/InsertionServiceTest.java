@@ -5,10 +5,7 @@ import com.example.CarInsertion.model.Car;
 import com.example.CarInsertion.model.InsertionDTO;
 import com.example.CarInsertion.model.Offer;
 import com.example.CarInsertion.model.Utilities;
-import com.example.CarInsertion.repository.CarOfferUtRepo;
-import com.example.CarInsertion.repository.CarRepo;
-import com.example.CarInsertion.repository.OfferRepo;
-import com.example.CarInsertion.repository.UtilitiesRepo;
+import com.example.CarInsertion.repository.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +24,8 @@ public class InsertionServiceTest {
     private CarRepo carRepo;
     @Mock
     private OfferRepo offerRepo;
+    @Mock
+    private AuctionRepo auctionRepo;
     @Mock
     private UtilitiesRepo utilitiesRepo;
     @Mock
@@ -49,7 +48,7 @@ public class InsertionServiceTest {
     @Test
     @DisplayName("Should pass if a list of cars, offers and utilities is returned")
     void shouldInsertTheInputIntoTheDatabase() {
-        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
+        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, auctionRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
 
         byte[] image = "Test String".getBytes();
 
@@ -87,7 +86,7 @@ public class InsertionServiceTest {
     @Test
     @DisplayName("Should pass if a list of cars, offers and utilities is returned")
     void shouldUpdateTheDatabase() {
-        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
+        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, auctionRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
 
         byte[] image = "Test String".getBytes();
 
@@ -124,7 +123,7 @@ public class InsertionServiceTest {
     @Test
     @DisplayName("Should pass if a list of cars, offers and utilities is returned")
     void shouldRetrieveCarsFromAnUsername() {
-        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
+        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, auctionRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
 
         String input_username = "test@gmail.com";
 

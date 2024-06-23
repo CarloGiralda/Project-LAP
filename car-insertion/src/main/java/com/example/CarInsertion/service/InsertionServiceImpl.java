@@ -2,10 +2,7 @@ package com.example.CarInsertion.service;
 
 import com.example.CarInsertion.discoveryclient.DiscoveryClientService;
 import com.example.CarInsertion.model.*;
-import com.example.CarInsertion.repository.CarOfferUtRepo;
-import com.example.CarInsertion.repository.CarRepo;
-import com.example.CarInsertion.repository.OfferRepo;
-import com.example.CarInsertion.repository.UtilitiesRepo;
+import com.example.CarInsertion.repository.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -21,6 +18,7 @@ import java.util.List;
 public class InsertionServiceImpl implements InsertionService{
     private final CarRepo carRepo;
     private final OfferRepo offerRepo;
+    private final AuctionRepo auctionRepo;
     private final UtilitiesRepo utilitiesRepo;
     private final CarOfferUtRepo carOfferUtRepo;
 
@@ -28,9 +26,10 @@ public class InsertionServiceImpl implements InsertionService{
 
     private RestTemplate restTemplate;
 
-    public InsertionServiceImpl(CarRepo carRepo, OfferRepo offerRepo, UtilitiesRepo utilitiesRepo, CarOfferUtRepo carOfferUtRepo, DiscoveryClientService discoveryClientService, RestTemplate restTemplate) {
+    public InsertionServiceImpl(CarRepo carRepo, OfferRepo offerRepo, AuctionRepo auctionRepo, UtilitiesRepo utilitiesRepo, CarOfferUtRepo carOfferUtRepo, DiscoveryClientService discoveryClientService, RestTemplate restTemplate) {
         this.carRepo = carRepo;
         this.offerRepo = offerRepo;
+        this.auctionRepo = auctionRepo;
         this.utilitiesRepo = utilitiesRepo;
         this.carOfferUtRepo = carOfferUtRepo;
         this.discoveryClientService = discoveryClientService;
@@ -52,6 +51,23 @@ public class InsertionServiceImpl implements InsertionService{
         notifySubscribedUser(car.getCid(),offer.getZoneLocation());
 
         return new InsertionDTO(resultCar, resultOffer, resultUt);
+    }
+
+    @Override
+    public AuctionDTO insertAuction(AuctionDTO dto) {
+        Auction auction = dto.getAuction();
+        Utilities ut = dto.getUtilities();
+        Car car = dto.getCar();
+        auction.setCid(car.getCid());
+        Auction resultAuction = auctionRepo.save(auction);
+        Utilities resultUt = utilitiesRepo.save(ut);
+        car.setUtilities_utid(resultUt);
+        Car resultCar = carRepo.save(dto.getCar());
+
+        String auctionUrl = discoveryClientService.getServiceUrl("AUCTION-SERVICE")+  "/auction/create";
+        restTemplate.postForEntity(auctionUrl, auction, String.class);
+
+        return new AuctionDTO(resultCar, resultAuction, resultUt);
     }
 
     private void notifySubscribedUser(Long cid, String zone){

@@ -10,10 +10,14 @@
         <module name="Auction-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auction" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Auction-service" options="-parameters" />
+      <module name="auction" options="-parameters" />
     </option>
   </component>
 </project>

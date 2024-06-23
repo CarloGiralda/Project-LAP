@@ -5,18 +5,17 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class InsertionDTO {
+public class AuctionDTO {
     private Car car;
-    private Offer offer;
+    private Auction auction;
     private Utilities utilities;
 
-    public InsertionDTO() {
+    public AuctionDTO() {
     }
 
-    public InsertionDTO(Car car, Offer offer, Utilities utilities) {
+    public AuctionDTO(Car car, Auction auction, Utilities utilities) {
         this.car = car;
-        this.offer = offer;
+        this.auction = auction;
         this.utilities = utilities;
     }
-
 }

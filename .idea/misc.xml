@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/frontend/pom.xml" />
+        <option value="$PROJECT_DIR$/api/pom.xml" />
+        <option value="$PROJECT_DIR$/auction/pom.xml" />
+        <option value="$PROJECT_DIR$/chat/pom.xml" />
+        <option value="$PROJECT_DIR$/blockchain (node 1)/pom.xml" />
+        <option value="$PROJECT_DIR$/blockchain (node 2)/pom.xml" />
+        <option value="$PROJECT_DIR$/car-book/pom.xml" />
+        <option value="$PROJECT_DIR$/car-insertion/pom.xml" />
+        <option value="$PROJECT_DIR$/car-rating/pom.xml" />
+        <option value="$PROJECT_DIR$/car-search/pom.xml" />
+        <option value="$PROJECT_DIR$/discovery/pom.xml" />
+        <option value="$PROJECT_DIR$/email/pom.xml" />
+        <option value="$PROJECT_DIR$/notification/pom.xml" />
+        <option value="$PROJECT_DIR$/payment/pom.xml" />
+        <option value="$PROJECT_DIR$/user/pom.xml" />
+        <option value="$PROJECT_DIR$/zone/pom.xml" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

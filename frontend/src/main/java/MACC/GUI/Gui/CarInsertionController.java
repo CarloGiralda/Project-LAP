@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class CarInsertionController {
 
+    @RequestMapping(path="/carinsert/selection")
+    public String getOfferForm1() { return "templates/CarInsertion/selection"; }
     @RequestMapping(path="/carinsert/insertoffer")
     public String getOfferForm3() { return "templates/CarInsertion/offerForm"; }
+    @RequestMapping(path="/carinsert/insertauction")
+    public String getOfferForm2() { return "templates/CarInsertion/auctionForm"; }
     @RequestMapping(path="/carinsert/insertcar")
     public String getOfferForm4() { return "templates/CarInsertion/carForm"; }
     @RequestMapping(path="/carinsert/insertutilities")

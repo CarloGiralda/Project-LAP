@@ -17,7 +17,8 @@ public class RouteValidator {
             "/eureka",
             "/email/recovery",
             "/sockjs",
-            "/payment/execute"
+            "/payment/execute",
+            "/secured"
     );
 
     public Predicate<ServerHttpRequest> isSecured =

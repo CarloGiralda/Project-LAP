@@ -133,7 +133,7 @@ spring:
 
               # chat service
             - id: chat-service
-              uri: http://localhost:9006
+              uri: http://chat:9006
               predicates:
                 - Path=/chat/**
               filters:
@@ -147,6 +147,11 @@ spring:
                     - DELETE
                   allowedHeaders: '*'
                   maxAge: 30
+
+            - id: c-service
+              uri: http://chat:9006
+              predicates:
+                Path=/secured/**
 
               # carBook service reservation
             - id: carBook-service-reservation
@@ -164,7 +169,6 @@ spring:
                     - DELETE
                   allowedHeaders: '*'
                   maxAge: 30
-
 
               # carBook service subscription
             - id: carBook-service-subscription
@@ -187,11 +191,6 @@ spring:
               uri: lb://NOTIFICATION-SERVICE
               predicates:
                 Path=/sockjs/**
-
-            - id: c-service
-              uri: http://localhost:9006
-              predicates:
-                Path=/secured/**
 
             # payment service
             - id: payment-service
@@ -226,5 +225,18 @@ spring:
                   allowedHeaders: '*'
                   maxAge: 30
 
-
-
+            - id: auction-service
+              uri: lb://AUCTION-SERVICE
+              predicates:
+                - Path=/auction/**
+              filters:
+                - AuthenticationFilter
+              metadata:
+                cors:
+                  allowedOrigins: '*'
+                  allowedMethods:
+                    - GET
+                    - POST
+                    - DELETE
+                  allowedHeaders: '*'
+                  maxAge: 30

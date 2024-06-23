@@ -6,7 +6,8 @@ function chatRequest() {
     fetch(url, {
         method: 'GET',
         headers: {
-            'Authorization': "Bearer " + token
+            Authorization: "Bearer " + token,
+            mode : 'no-cors'
         }
     }).then(function(response) {
         return response.json();

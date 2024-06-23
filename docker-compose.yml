@@ -1,8 +1,7 @@
 version: '3'
-############################### in api-gw in chat service url in application.yml insert the ms name "chat-service" check the eureka url differences in properties and yml in overriding them (the names)
 services:
   frontend:
-    build: ./docker/frontend
+    build: ./frontend
     container_name: frontend
     ports:
       - "8081:8081"
@@ -22,12 +21,12 @@ services:
       - "5672:5672"
       - "15672:15672"
   discovery:
-    build: ./docker/discovery
+    build: ./discovery
     container_name: discovery
     ports:
       - "8761:8761"
   api-gw:
-    build: ./docker/api
+    build: ./api
     container_name: api-gw
     ports:
       - "8080:8080"
@@ -36,7 +35,7 @@ services:
     depends_on:
       - discovery
   user-service:
-    build: ./docker/user
+    build: ./user
     container_name: user-service
     ports:
       - "9000:9000"
@@ -49,7 +48,7 @@ services:
       - discovery
   
   area-service:
-    build: ./docker/zone
+    build: ./zone
     container_name: area-service
     ports:
       - "9008:9008"
@@ -62,7 +61,7 @@ services:
       - discovery
   
   send-email:
-    build: ./docker/email/Send_Email_MS
+    build: ./email
     container_name: send-email
     ports:
       - "9001:9001"
@@ -75,7 +74,7 @@ services:
       - discovery
   
 #   payment-service:
-#     build: ./docker/payment
+#     build: ./payment
 #     container_name: payment-service
 #     ports:
 #       - "9010:9010"
@@ -87,7 +86,7 @@ services:
 #       - db
 #       - discovery
 #   blockchain-service:
-#     build: ./docker/blockchain
+#     build: ./blockchain (node 1)
 #     container_name: blockchain-service
 # #    ports:
 # #      - "9011:9011"
@@ -99,8 +98,8 @@ services:
 #       - discovery
 #     network_mode: host
 #   blockchain-service2:
-#     build: ./docker/blockchain2
-#     container_name: blockchain-service2
+#     build: ./blockchain2
+#     container_name: blockchain (node 2)
 # #    ports:
 # #      - "9012:9012"
 #     environment:
@@ -111,7 +110,7 @@ services:
 #       - discovery
 #     network_mode: host
   car-insertion:
-    build: ./docker/car-insertion
+    build: ./car-insertion
     container_name: car-insertion
     ports:
       - "9002:9002"
@@ -123,7 +122,7 @@ services:
       - db
       - discovery
   car-search:
-    build: ./docker/car-search
+    build: ./car-search
     container_name: car-search
     ports:
       - "9003:9003"
@@ -136,7 +135,7 @@ services:
       - discovery
       - car-insertion
   car-rating:
-    build: ./docker/car-rating
+    build: ./car-rating
     container_name: car-rating
     ports:
       - "9004:9004"
@@ -149,7 +148,7 @@ services:
       - discovery
       - car-insertion
   car-book:
-    build: ./docker/car-book
+    build: ./car-book
     container_name: car-book
     ports:
       - "9005:9005"
@@ -162,20 +161,20 @@ services:
       - rabbitmq
       - discovery
       - car-search
-    # network_mode: host
-  # chat:
-  #   build: ./docker/chat
-  #   container_name: chat
-  #   ports:
-  #     - "9006:9006"
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     BROKER_RELAY_HOST: chat
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
-  #   depends_on:
-  #     - db
+     # network_mode: host
+  chat:
+    build: ./chat
+    container_name: chat
+    ports:
+      - "9006:9006"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      BROKER_RELAY_HOST: chat
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      - db
   notification-service:
-    build: ./docker/notification
+    build: ./notification
     container_name: notification-service
     ports:
      - "9007:9007"
