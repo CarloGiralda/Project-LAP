@@ -90,6 +90,7 @@ Once the application is set up and running, you can access the frontend through 
 | **Payment Service**   | Manages payment transactions                     | 9010  |
 | **Blockchain (miner 1)**        | Manages blockchain transactions                  | 9011  |
 | **Blockchain (miner 2)**       | Secondary blockchain service                     | 9012  |
+| **Auction**           | Auction service                     | 9013  |
 
 
 Each service is independently deployable and can be scaled based on demand.
