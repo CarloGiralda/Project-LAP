@@ -32,11 +32,11 @@ async function submitForm() {
 
     var date = document.getElementById("date").value;
     var time = document.getElementById("time").value;
-    const dateTimeString = "${date}T${time}:00Z";
+    const dateTimeString = date + "T" + time + ":00Z";
     var username = sessionStorage.getItem("username");
 
     const params = {
-        date: dateTimeString,
+        startDate: dateTimeString,
         cid: 0,
         peerId: username
     };

@@ -38,15 +38,27 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/" id="home">Home</a>
                     </li>
+
+                    <!-- Conditionally show links if user is not logged-in -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/registration" id="signupLink">Sign-up</a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link" href="/login" id="loginLink">Login</a>
+                    </li>
+
+                    <!-- Conditionally show links if user is logged-in -->
                     <li class="nav-item">
                         <a class="nav-link" href="/chat/page" id="chatLink">Chat</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/insertoffer" id="carInsertion">Insert</a>
+                        <a class="nav-link" href="/carinsert/selection" id="carInsertion">Insert</a>
                     </li>
-
                     <li>
-                        <a class="nav-link" href="/searchbar">Search</a>
+                        <a class="nav-link" href="/searchbar" id="search" style="display: none">Search</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="/auction" id="auction" style="display: none">Auctions</a>
                     </li>
                 </ul>
             </div>

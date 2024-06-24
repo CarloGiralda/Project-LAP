@@ -27,7 +27,7 @@ public class AuctionController {
 
     @RequestMapping(path = "/auction")
     public String auction(){
-        return "templates/Auction/auction";
+        return "templates/Auction/auctionSearch";
     }
 
 }

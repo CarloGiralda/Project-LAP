@@ -18,6 +18,37 @@
   <script src="/js/cookie.js"></script>
   <script src="/js/Auction/auctionSearch.js"></script>
 
+  <style>
+    #value {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 4em; /* Adjust the font size as needed */
+    text-align: center;
+    }
+
+    #bidButton {
+    display: none;
+    }
+
+    #bid {
+    display: none;
+    }
+
+    #timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 4em; /* Adjust the font size as needed */
+    text-align: center;
+    }
+  </style>
 </head>
 
 <body data-bs-spy="scroll">
@@ -52,11 +83,13 @@
               <a class="nav-link" href="/chat/page" id="chatLink">Chat</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/carinsert/insertoffer" id="carInsertion">Insert</a>
+              <a class="nav-link" href="/carinsert/selection" id="carInsertion">Insert</a>
             </li>
-
             <li>
-              <a class="nav-link" href="/searchbar">Search</a>
+              <a class="nav-link" href="/searchbar" id="search" style="display: none">Search</a>
+            </li>
+            <li>
+              <a class="nav-link" href="/auction" id="auction" style="display: none">Auctions</a>
             </li>
           </ul>
         </div>
@@ -113,6 +146,21 @@
     <div class="album py-5">
       <div class="container">
 
+        <h1>Raft Consensus Demo</h1>
+
+        <p  id="timer"></p>
+
+        <input type="text" id="bid" placeholder="Enter Bid">
+        <button type="button" id="bidButton">Send bid to auction</button>
+
+        <!-- Input Fields -->
+        <p  id="status">
+        <p  id="myPeer" >
+        <p  id="yourValue">
+
+          <!-- Final Value -->
+        <p  id="value">
+
         <!--HERE DYNAMICALLY INSERT CARS-->
         <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list"></div>
       </div>
@@ -128,11 +176,6 @@
 
 </main>
 
-
-
-
-
-
 <!-- ................................................ -->
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
@@ -141,6 +184,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 </body>
 </html>

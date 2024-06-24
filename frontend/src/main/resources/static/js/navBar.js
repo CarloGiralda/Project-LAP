@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const bell = document.getElementById('bellLink')
     const notificationDropDown = document.getElementById('NotificationList')
     const notificationBell = document.getElementById('notificationBell')
-
+    const auctionLink = document.getElementById('auction')
+    const searchLink = document.getElementById('search')
 
     console.log("user is authenticated:", isAuthenticated)
 
@@ -28,6 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
         insert.style.display = 'block'
         userDropDown.style.display = 'block'
         bell.style.display = 'block'
+        auctionLink.style.display = 'block'
+        searchLink.style.display = 'block'
         signupLink.style.display = 'none'
         loginLink.style.display = 'none'
 
@@ -40,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
         insert.style.display = 'none'
         userDropDown.style.display = 'none'
         bell.style.display = 'none'
+        auctionLink.style.display = 'none'
+        searchLink.style.display = 'none'
         signupLink.style.display = 'block'
         loginLink.style.display = 'block'
     }

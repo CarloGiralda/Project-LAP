@@ -25,8 +25,6 @@ public class InsertionServiceTest {
     @Mock
     private OfferRepo offerRepo;
     @Mock
-    private AuctionRepo auctionRepo;
-    @Mock
     private UtilitiesRepo utilitiesRepo;
     @Mock
     private CarOfferUtRepo carOfferUtRepo;
@@ -48,7 +46,7 @@ public class InsertionServiceTest {
     @Test
     @DisplayName("Should pass if a list of cars, offers and utilities is returned")
     void shouldInsertTheInputIntoTheDatabase() {
-        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, auctionRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
+        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
 
         byte[] image = "Test String".getBytes();
 
@@ -86,7 +84,7 @@ public class InsertionServiceTest {
     @Test
     @DisplayName("Should pass if a list of cars, offers and utilities is returned")
     void shouldUpdateTheDatabase() {
-        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, auctionRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
+        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
 
         byte[] image = "Test String".getBytes();
 
@@ -123,7 +121,7 @@ public class InsertionServiceTest {
     @Test
     @DisplayName("Should pass if a list of cars, offers and utilities is returned")
     void shouldRetrieveCarsFromAnUsername() {
-        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, auctionRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
+        InsertionServiceImpl isi = new InsertionServiceImpl(carRepo, offerRepo, utilitiesRepo, carOfferUtRepo, discoveryClientService, restTemplate);
 
         String input_username = "test@gmail.com";
 
