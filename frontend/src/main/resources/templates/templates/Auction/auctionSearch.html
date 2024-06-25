@@ -32,6 +32,7 @@
 
     #bidButton {
       display: none;
+      margin: 10px;
     }
 
     #bid {
@@ -53,8 +54,26 @@
       height: 75vh;
       margin: 0;
       font-family: Arial, sans-serif;
-      font-size: 4em; /* Adjust the font size as needed */
+      font-size: 5em; /* Adjust the font size as needed */
       text-align: center;
+    }
+
+    #status {
+      font-size: 2em;
+      text-align: center;
+      margin: 30px;
+    }
+
+    #yourValue {
+      font-size: 2em;
+      text-align: center;
+      margin: 10px;
+    }
+
+    #title {
+      font-size: 5em;
+      text-align: center;
+      margin: 10px;
     }
   </style>
 </head>
@@ -101,10 +120,7 @@
             </li>
           </ul>
         </div>
-
       </div>
-
-
 
       <!-- User account and notification menu dropdown -->
       <div class="navbar-collapse justify-content-end" id="navbarNavDarkDropdown">
@@ -120,7 +136,6 @@
 
             <ul id="NotificationList" class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark hidden-arrow animate slideIn">
               <!-- Add dynamic content for notifications -->
-
             </ul>
           </li>
         </ul>
@@ -133,15 +148,12 @@
               <span style="color: #ff9900;" id="usernameDisplay">User</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark animate slideIn">
-              <!-- TODO link to user settings -->
               <li><a class="dropdown-item" href="/userSettings">User settings</a></li>
-
               <li><a class="dropdown-item" href="/login?loggedOut=true">Logout</a></li>
             </ul>
           </li>
         </ul>
       </div>
-
     </div>
   </nav>
 </header>
@@ -152,25 +164,11 @@
   <!-- CONTENT BAR -->
   <div class="bd-content ps-lg-2">
     <div class="album py-5">
-      <div class="container mt-2 mb-2 p-4">
-        <h1 class="text-center mb-3">Auctions</h1>
+      <div class="container">
+        <h1 id="title">Auctions</h1>
 
         <!--HERE DYNAMICALLY INSERT AUCTIONS-->
-        <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list">
-
-          <!-- TODO remove only testing -->
-          <div class="card p-2 mb-3">
-            <div class="card-body">
-
-              <h5 class="card-title">123456</h5> <!-- Example auctionId -->
-              <p class="card-text">
-                Date: 2024-06-25<br>
-                CarId: ABC123
-              </p>
-            </div>
-            <button id="btn_0" class="btn btn-danger btn-block m-3">Subscribe</button>
-          </div>
-        </div>
+        <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list"></div>
 
         <p id="timer"></p>
 

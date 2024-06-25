@@ -1,7 +1,6 @@
 let notificationWSUrl = 'http://localhost:8080/sockjs?user='
 let notificationCount = 0
 
-
 document.addEventListener("DOMContentLoaded", function () {
     // Check if the user is authenticated based on the presence of the HttpOnly cookie
     const isAuthenticated = document.cookie.includes('jwtToken')
@@ -31,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         bell.style.display = 'block'
         auctionLink.style.display = 'block'
         searchLink.style.display = 'block'
+
         signupLink.style.display = 'none'
         loginLink.style.display = 'none'
 
@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
         bell.style.display = 'none'
         auctionLink.style.display = 'none'
         searchLink.style.display = 'none'
+
         signupLink.style.display = 'block'
         loginLink.style.display = 'block'
     }
@@ -74,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const socket = new SockJS(notificationWSUrl + encodeURIComponent(username));
         const stompClient = Stomp.over(socket);
 
-
         // connect to the stomp endpoint
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
@@ -84,28 +84,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 //console.log(response.carId, response.carName)
                 showMessage(response);
             });
-
         });
     }
 
     function showMessage(message) {
-
         if (notificationDropDown && notificationBell) {
 
             notificationCount += 1
             notificationBell.textContent = notificationCount
 
             addLiItem(message.carName + " now available", message.carUrl)
-
         }
-
     }
 
     function addLiItem(content, link, type){
-
         const newLi = document.createElement('li');
         const newLink = document.createElement('a');
-
 
         newLink.className = 'dropdown-item bold-text'
         newLink.href = link
@@ -121,10 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
         newLink.appendChild(textElem)
         newLi.appendChild(newLink)
         notificationDropDown.appendChild(newLi)
-
     }
-
-
 });
 
 
