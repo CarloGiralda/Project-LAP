@@ -20,33 +20,41 @@
 
   <style>
     #value {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    font-size: 4em; /* Adjust the font size as needed */
-    text-align: center;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      font-size: 4em; /* Adjust the font size as needed */
+      text-align: center;
     }
 
     #bidButton {
-    display: none;
+      display: none;
     }
 
     #bid {
-    display: none;
+      display: none;
+      width: 100%;
+      padding: 10px 40px;
+      box-sizing: border-box;
+      background-color: white;
+      background-image: url('/static/img/icons/dollar-icon.png');
+      background-position: 10px;
+      background-repeat: no-repeat;
+      background-size: 20px 75%;
     }
 
     #timer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    font-size: 4em; /* Adjust the font size as needed */
-    text-align: center;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 75vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      font-size: 4em; /* Adjust the font size as needed */
+      text-align: center;
     }
   </style>
 </head>
@@ -145,24 +153,22 @@
   <div class="bd-content ps-lg-2">
     <div class="album py-5">
       <div class="container">
+        <h1>Auctions</h1>
 
-        <h1>Raft Consensus Demo</h1>
+        <!--HERE DYNAMICALLY INSERT AUCTIONS-->
+        <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list"></div>
 
-        <p  id="timer"></p>
+        <p id="timer"></p>
 
         <input type="text" id="bid" placeholder="Enter Bid">
         <button type="button" id="bidButton">Send bid to auction</button>
 
         <!-- Input Fields -->
-        <p  id="status">
-        <p  id="myPeer" >
-        <p  id="yourValue">
+        <p id="status">
+        <p id="yourValue">
 
-          <!-- Final Value -->
-        <p  id="value">
-
-        <!--HERE DYNAMICALLY INSERT CARS-->
-        <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list"></div>
+        <!-- Final Value -->
+        <p id="value">
       </div>
     </div>
   </div>

@@ -2,10 +2,11 @@
 var peer = null;
 var isReadyAuction = false;
 var peersIds = null;
-var auction;
-var serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
-var timestamp;
 var token = getCookie("jwtToken");
+var serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
+var auction;
+var timestamp;
+var myPeerId;
 
 document.addEventListener('DOMContentLoaded', () => {
     var serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
@@ -13,10 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('bidButton').addEventListener('click', () => {
         const bid = document.getElementById('bid').value; // fetch from user
-        document.getElementById('yourValue').textContent = 'Your bid: '+ bid;
+        document.getElementById('yourValue').textContent = 'Your bid: ' + bid;
         document.getElementById('bid').style.display = 'none';
         document.getElementById('bidButton').style.display = 'none';
-        const myPeerId = document.getElementById('myPeer').textContent;
         document.getElementById('status').textContent = 'Waiting for final result of auction...';
         const raftNode = new RaftNode(peer, myPeerId, peersIds, bid);
         console.log('RaftNode initialized:', raftNode);
@@ -37,8 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addButtons(body)
         })
         .catch(error => {
-            console.error('Error fetching peer IDs:', error);
-            document.getElementById('status').textContent = 'Failed to fetch PeersIds...';
+            document.getElementById('status').textContent = 'Failed to fetch auctions...';
         });
 })
 
@@ -76,7 +75,7 @@ function addButtons(body) {
             auction = event.currentTarget.customField;
             peer = new Peer();
             peer.on('open', function (peerId) {
-                document.getElementById('status').textContent = 'Waiting for bid input...';
+                myPeerId = peerId
                 subscribeToServer(peerId, auction);
                 clearButtons()
             });
@@ -122,9 +121,10 @@ function subscribeToServer(peerId, auctionId) {
         });
 }
 
-function startTimer(endTime) {
+function startTimer(endTimeToConvert) {
     var timerElement = document.getElementById('timer');
-    var endTime = new Date(endTime).getTime();
+    timerElement.style.display = 'flex';
+    var endTime = new Date(endTimeToConvert).getTime();
 
     function formatTime(seconds) {
         const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -178,8 +178,8 @@ function fetchPeerIdsFromServer() {
             console.log(data);
             peersIds = data;
             isReadyAuction = true;
-            document.getElementById('bid').style.display='block';
-            document.getElementById('bidButton').style.display='block';
+            document.getElementById('bid').style.display = 'block';
+            document.getElementById('bidButton').style.display = 'block';
 
         })
         .catch(error => {
@@ -187,10 +187,6 @@ function fetchPeerIdsFromServer() {
             document.getElementById('status').textContent = 'Failed to fetch PeersIds...';
         });
 }
-
-
-
-
 
 // STRUCTURES
 
@@ -211,11 +207,11 @@ const types = {
 
 class RaftNode {
     constructor(myPeer,myId, peersIds, bid) {
-        this.myPeer = myPeer ;
+        this.myPeer = myPeer;
         this.id = myId;
         this.bid = bid; // original bid to check if you win the auction for simplicity the bid value is identifier of the user
-        this.peersIds = peersIds;// peers ids fetched from microservice
-        this.peers = {};// stores the P2P connection
+        this.peersIds = peersIds; // peers ids fetched from microservice
+        this.peers = {}; // stores the P2P connection
         this.currentTerm = 0; // --> not used here
         this.votedFor = null;
         this.committed = false;
@@ -223,7 +219,6 @@ class RaftNode {
         this.acks = 0;
         this.finalAcks = 0;
         this.state = states.FOLLOWER;
-        this.leaderId = null;
         this.votes = {};
         this.totalNodes = this.peersIds.length;
         this.connectToPeers();
@@ -335,7 +330,7 @@ class RaftNode {
 
     send(peer, message) {
         // Send message to a peer
-        if(peer != this.id){
+        if(peer !== this.id){
             const conn = this.peers[peer];
             conn.send(message);
         }
@@ -383,14 +378,14 @@ class RaftNode {
 
     becomeLeader() {
         this.state = states.LEADER;
-        this.leaderId = this.id;
+        this.leader = this.id;
         this.stopElectionTimeout();
         this.startHeartbeat();
     }
 
     requestVotes() {
-        this.votes[this.id]= 1; // vote for myself
-        this.votedFor=this.id;
+        this.votes[this.id] = 1; // vote for myself
+        this.votedFor = this.id;
         for (const peer of this.peersIds) {
             const raftMessage = {
                 sender: this.id,
@@ -405,7 +400,6 @@ class RaftNode {
 
     onReceiveVote(message) {
         const peer = message.sender;
-        const term = message.term;
         if (this.votedFor == null) {
             this.votedFor = peer;
             this.stopElectionTimeout();
@@ -420,11 +414,10 @@ class RaftNode {
         }
     }
 
-    onReceiveVoteResponse(message) {
-        const term = message.term;
+    onReceiveVoteResponse() {
         this.votes[this.id]++;
         if (this.votes[this.id] > this.totalNodes / 2) {
-            // Received majority of votes, become leader
+            // Received the majority of votes, become leader
             this.becomeLeader();
         }
     }
@@ -432,7 +425,7 @@ class RaftNode {
     // LOG PART
 
     startHeartbeat() {
-        if(this.committed == true){
+        if (this.committed === true){
             return true;
         }
         for (const peer of this.peersIds) {
@@ -452,11 +445,10 @@ class RaftNode {
     }
 
     onReceiveHeartbeat(message) {
-        if(this.committed == true){
+        if (this.committed === true){
             return true;
         }
         const peer = message.sender;
-        const term = message.term;
         const entries = message.entries;
         this.leader = peer;
         this.log = [...new Set([...this.log,...entries])];
@@ -477,11 +469,9 @@ class RaftNode {
     }
 
     onReceiveHeartbeatResponse(message) {
-        if(this.committed == true){
+        if (this.committed === true){
             return true;
         }
-        const peer = message.sender;
-        const term = message.term;
         const entries = message.entries;
         this.log = [...new Set([...this.log, ...entries])];
         this.acks++;
@@ -505,11 +495,10 @@ class RaftNode {
     }
 
     onReceiveHeartbeatCommit(message) {
-        if(this.committed == true){
+        if (this.committed === true){
             return true;
         }
         const peer = message.sender;
-        const term = message.term;
         const value = message.value;
 
         // committed value
@@ -520,31 +509,23 @@ class RaftNode {
         this.finalValue = value;
         const jsonMessage = JSON.stringify(raftMessage);
         this.send(peer,jsonMessage);
-        if(this.finalValue == this.bid){
-            this.committed =true,
-                document.getElementById('value').style.display='block';
-            document.getElementById('value').textContent = ' You win the auction the price is :' + this.finalValue;
-        }
-        else{
-            this.committed =true,
-                document.getElementById('value').style.display='block';
-            document.getElementById('value').textContent = 'You lost the auction the price is :' + this.finalValue + 'Leader :' + this.leader;
+        this.commitFunction()
+    }
+
+    onReceiveHeartbeatCommitResponse() {
+        this.finalAcks++;
+        if (this.finalAcks > this.totalNodes / 2) {
+            this.commitFunction()
         }
     }
 
-    onReceiveHeartbeatCommitResponse(message) {
-        this.finalAcks++;
-        if (this.finalAcks > this.totalNodes / 2) {
-            if(this.finalValue == this.bid){
-                this.committed =true,
-                    document.getElementById('value').style.display='block';
-                document.getElementById('value').textContent = ' You win the auction the price is :' + this.finalValue;
-            }
-            else{
-                this.committed =true,
-                    document.getElementById('value').style.display='block';
-                document.getElementById('value').textContent = 'You lost the auction the price is :' + this.finalValue + 'Leader :' + this.leader;
-            }
+    commitFunction() {
+        this.committed = true;
+        document.getElementById('value').style.display = 'block';
+        if (this.finalValue == this.bid) {
+            document.getElementById('value').textContent = 'You win the auction the price is :' + this.finalValue;
+        } else {
+            document.getElementById('value').textContent = 'You lost the auction the price is :' + this.finalValue + '\nLeader :' + this.leader;
         }
     }
 }
