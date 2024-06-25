@@ -40,7 +40,7 @@
       padding: 10px 40px;
       box-sizing: border-box;
       background-color: white;
-      background-image: url('/static/img/icons/dollar-icon.png');
+      background-image: url('/img/icons/dollar-icon.png');
       background-position: 10px;
       background-repeat: no-repeat;
       background-size: 20px 75%;
@@ -152,11 +152,25 @@
   <!-- CONTENT BAR -->
   <div class="bd-content ps-lg-2">
     <div class="album py-5">
-      <div class="container">
-        <h1>Auctions</h1>
+      <div class="container mt-2 mb-2 p-4">
+        <h1 class="text-center mb-3">Auctions</h1>
 
         <!--HERE DYNAMICALLY INSERT AUCTIONS-->
-        <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list"></div>
+        <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list">
+
+          <!-- TODO remove only testing -->
+          <div class="card p-2 mb-3">
+            <div class="card-body">
+
+              <h5 class="card-title">123456</h5> <!-- Example auctionId -->
+              <p class="card-text">
+                Date: 2024-06-25<br>
+                CarId: ABC123
+              </p>
+            </div>
+            <button id="btn_0" class="btn btn-danger btn-block m-3">Subscribe</button>
+          </div>
+        </div>
 
         <p id="timer"></p>
 

@@ -49,16 +49,30 @@ function addButtons(body) {
         const card = document.createElement( "div" );
         card.className = "card p-2 mb-3";
 
+        // Create a div for positioning the image
+        const imageWrapper = document.createElement("div");
+        imageWrapper.className = "image-wrapper position-absolute";
+
+        const carInfo = getCarInfo( body[x]["cid"] );
+
+        // Create an image element
+        const cardImage = document.createElement("img");
+        cardImage.className = "card-img-top";
+        cardImage.src = URL.createObjectURL(carInfo["image"]); // Assuming 'imageUrl' is the key in 'body' object
+        cardImage.alt = "Car Image"; // Alternative text for the image
+
+        imageWrapper.appendChild(cardImage);
+
         const cardBody = document.createElement( "div" );
         cardBody.className = "card-body";
 
         const cardTitle = document.createElement( "h5" );
         cardTitle.className = "card-title";
-        cardTitle.textContent = body[x]["auctionId"];
+        cardTitle.textContent = "Auction id: " + body[x]["auctionId"];
 
         const cardText = document.createElement( "p" );
         cardText.className = "card-text";
-        cardText.textContent = "Date: " + body[x]["startDate"] + "\nCarId: " + body[x]["cid"];
+        cardText.textContent = "Date: " + body[x]["startDate"] + "\nCar: " + body["car"]["brand"] + " " + body["car"]["model"];
 
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
@@ -88,6 +102,32 @@ function addButtons(body) {
         card.appendChild(btn);
         cardContainer.append(card)
     }
+}
+
+async function getCarInfo(id){
+    var getUrl = "http://localhost:8080/carsearch/getCarById/" + id;
+
+    return await fetch( getUrl, {
+        method: 'GET',
+        headers: {
+            'Authorization': "Bearer " + token
+        },
+    } ).then( function (response) {
+        return response.json();
+    } ).then( async function (body) {
+        if (body["car"]["image"] !== null) {
+            const blob = new Blob( [new Uint8Array( body["car"]["image"] )], {type: 'image/jpeg'} );
+            const image = document.getElementById( "image" );
+            image.src = URL.createObjectURL( blob )
+            console.log( "car image not null" )
+
+            return {
+                "name": body["car"]["brand"] + " " + body["car"]["model"],
+                "image": blob
+            }
+        }
+    } )
+
 }
 
 function clearButtons() {
