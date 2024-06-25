@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 })
 
+
 function addButtons(body) {
     const rowsAdded = body.length;
     const cardContainer = document.getElementById( "list" );
@@ -51,8 +52,9 @@ function addButtons(body) {
 
         // Create a div for positioning the image
         const imageWrapper = document.createElement("div");
-        imageWrapper.className = "image-wrapper position-absolute";
+        imageWrapper.className = "image-wrapper";
 
+        // TODO test this part
         const carInfo = getCarInfo( body[x]["cid"] );
 
         // Create an image element
@@ -76,6 +78,7 @@ function addButtons(body) {
 
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
+        cardBody.appendChild(imageWrapper);
 
         const btn = document.createElement( "button" );
         btn.setAttribute("id", "btn_" + x);
@@ -564,6 +567,8 @@ class RaftNode {
         document.getElementById('value').style.display = 'block';
         if (this.finalValue == this.bid) {
             document.getElementById('value').textContent = 'You win the auction the price is :' + this.finalValue;
+            // TODO Here code to confirm booking
+
         } else {
             document.getElementById('value').textContent = 'You lost the auction the price is :' + this.finalValue + '\nLeader :' + this.leader;
         }
