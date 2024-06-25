@@ -16,15 +16,12 @@ bellLink.addEventListener("click", function () {
         if (noNotificationItem){
             notificationDropDown.removeChild(noNotificationItem)
         }
-
     }
     const liElements = notificationDropDown.getElementsByTagName('li').length
-    if(liElements === 0){
-
+    if (liElements === 0) {
         addLiItem("No notification","#","NO_NOTIFICATION")
     }
 })
-
 
 document.addEventListener("DOMContentLoaded", function () {
     // Check if the user is authenticated based on the presence of the HttpOnly cookie
@@ -32,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const signupLink = document.getElementById('signupLink')
     const loginLink = document.getElementById('loginLink')
     const searchLink = document.getElementById('search')
+    const auctionLink = document.getElementById('auction')
     const usernameDisplay = document.getElementById('usernameDisplay')
     const userDropDown = document.getElementById('userDropDown')
     const chatLink = document.getElementById('chatLink')
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("user is authenticated:", isAuthenticated)
 
     if (isAuthenticated && sessionStorage.getItem("username")) {
-
         // read name from session storage and show to the user
         usernameDisplay.textContent = sessionStorage.getItem("username")
 
@@ -59,10 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
         bell.style.display = 'block'
         searchLink.style.display = 'block'
         carouselItems.style.display = 'block'
+        auctionLink.style.display = 'block'
 
         signupLink.style.display = 'none'
         loginLink.style.display = 'none'
-
 
         const token = getCookie("jwtToken");
         Promise.all([
@@ -76,20 +73,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }).catch(error => {
             console.error("Error in one of the asynchronous functions:", error);
         });
-
-    
     } else {
-
         chatLink.style.display = 'none'
         insert.style.display = 'none'
         userDropDown.style.display = 'none'
         bell.style.display = 'none'
         carouselItems.style.display = 'none'
+        auctionLink.style.display = 'none'
+
         signupLink.style.display = 'block'
         loginLink.style.display = 'block'
-
     }
-
 });
 
 function wsNotificationConnect() {
@@ -98,7 +92,6 @@ function wsNotificationConnect() {
     const username = sessionStorage.getItem("username");
     const socket = new SockJS(notificationWSUrl + encodeURIComponent(username));
     const stompClient = Stomp.over(socket);
-
 
     // connect to the stomp endpoint
     stompClient.connect({}, function (frame) {
@@ -109,28 +102,21 @@ function wsNotificationConnect() {
             //console.log(response.carId, response.carName)
             showMessage(response);
         });
-
     });
 }
 
 function showMessage(message) {
-
     if (notificationDropDown && notificationBell) {
-
         notificationCount += 1
         notificationBell.textContent = notificationCount
 
         addLiItem(message.carName + " now available", message.carUrl)
-
     }
-
 }
 
 function addLiItem(content, link, type){
-
     const newLi = document.createElement('li');
     const newLink = document.createElement('a');
-
 
     newLink.className = 'dropdown-item bold-text'
     newLink.href = link
@@ -146,7 +132,6 @@ function addLiItem(content, link, type){
     newLink.appendChild(textElem)
     newLi.appendChild(newLink)
     notificationDropDown.appendChild(newLi)
-
 }
 
 
@@ -254,8 +239,6 @@ document.getElementById("carouselZone").addEventListener("click", function(event
             }
 
         }).catch(error => console.log(error));
-
-
     }
 });
 

@@ -566,11 +566,10 @@ class RaftNode {
         this.committed = true;
         document.getElementById('value').style.display = 'block';
         if (this.finalValue == this.bid) {
-            document.getElementById('value').textContent = 'You win the auction the price is :' + this.finalValue;
             // TODO Here code to confirm booking
-
+            document.getElementById('value').textContent = 'You win the auction';
         } else {
-            document.getElementById('value').textContent = 'You lost the auction the price is :' + this.finalValue + '\nLeader :' + this.leader;
+            document.getElementById('value').textContent = 'You lost the auction';
         }
     }
 }

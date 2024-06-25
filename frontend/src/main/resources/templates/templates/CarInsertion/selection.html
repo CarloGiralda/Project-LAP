@@ -20,12 +20,31 @@
   <script src="/js/cookie.js"></script>
 
   <style>
-    .group {
-      border: 6px solid transparent; /* Ensure the border is solid */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .button {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 20px;
+      margin: 20% 3%;
+      font-size: 3em;
+      color: white;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .button1 {
+      background-color: #007bff;
+    }
+    .button2 {
+      background-color: #28a745;
     }
   </style>
-
 </head>
 <body>
 
@@ -67,10 +86,7 @@
           </li>
         </ul>
       </div>
-
     </div>
-
-
 
     <!-- User account and notification menu dropdown -->
     <div class="navbar-collapse justify-content-end" id="navbarNavDarkDropdown">
@@ -86,11 +102,9 @@
 
           <ul id="NotificationList" class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark hidden-arrow animate slideIn">
             <!-- Add dynamic content for notifications -->
-
           </ul>
         </li>
       </ul>
-
 
       <ul class="navbar-nav">
 
@@ -107,16 +121,13 @@
         </li>
       </ul>
     </div>
-
   </div>
 </nav>
 
 <div class="container mt-5 w-50">
   <div class="row">
-    <div class="col-md-6 col-md-offset-3 mx-auto">
-      <a href="/carinsert/insertauction" class="btn btn-success form-control">Auction</a>
-      <a href="/carinsert/insertoffer" class="btn btn-success form-control">Offer</a>
-    </div>
+      <a href="/carinsert/insertauction" class="btn btn-success form-control button button1">Insert a new Auction</a>
+      <a href="/carinsert/insertoffer" class="btn btn-success form-control button button2">Insert a new Offer</a>
   </div>
 </div>
 

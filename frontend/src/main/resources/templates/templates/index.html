@@ -19,8 +19,6 @@
     <link rel="stylesheet" type="text/css" href="/css/home.css">
     <link rel="stylesheet" href="/css/features.css">
 
-
-
     <script type="module" src="/js/homepage.js"></script>
     <script src="/js/cookie.js"></script>
     <script src="/js/Chat/chatRequest.js"></script>
@@ -186,35 +184,10 @@
                     </div>
                 </div>
 
-
-
-                <!--TODO HIDE-->
                 <div class="multiple-card-slider" style="display: block" id="subscriptionsSlider">
                     <div id="carouselExampleControls1" class="carousel" data-bs-ride="false">
-                        <div class="carousel-inner" id="carouselSubscriptions">
 
-                            <!--TODO DELETE-->
-<!--
-                            <div class="carousel-item active">
-                                <div class="card m-2">
-                                    <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                        <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
-
-
-                                        <a class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button">
-                                            Delete subscription
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
--->
-
-
-
-                        </div>
+                        <div class="carousel-inner" id="carouselSubscriptions"></div>
 
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls1" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -258,23 +231,8 @@
 
                 <div class="multiple-card-slider" style="display: none" id="reservationsSlider">
                     <div id="carouselExampleControls2" class="carousel" data-bs-ride="false">
-                        <div class="carousel-inner" id="carouselReservations">
 
-                            <!--<div class="carousel-item">
-
-                                &lt;!&ndash; TODO Hide this card &ndash;&gt;
-                                <div class="card m-2">
-                                    <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                        <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
-                                    </div>
-                                </div>
-
-                            </div>-->
-
-                        </div>
+                        <div class="carousel-inner" id="carouselReservations"></div>
 
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -284,14 +242,8 @@
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
-
                     </div>
-
-
-
                 </div>
-
-
             </div>
         </div>
 
@@ -317,26 +269,11 @@
                     </button>
                 </div>
 
-
                 <!--HIDE FOR EXECUTION-->
                 <div class="multiple-card-slider" style="display: none" id="insertedSlider">
                     <div id="carouselExampleControls3" class="carousel" data-bs-ride="false">
-                        <div class="carousel-inner" id="carouselInserted">
 
-<!--
-                            <div class="carousel-item">
-                                <div class="card m-2">
-                                    <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                        <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
-                                    </div>
-                                </div>
-                            </div>
--->
-
-                        </div>
+                        <div class="carousel-inner" id="carouselInserted"></div>
 
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls3" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -393,22 +330,8 @@
                 <!--HIDE FOR EXECUTION-->
                 <div class="multiple-card-slider" style="display: none" id="zoneSlider">
                     <div id="carouselExampleControls4" class="carousel" data-bs-ride="false">
-                        <div class="carousel-inner" id="carouselZone">
 
-                            <!--
-                                                        <div class="carousel-item">
-                                                            <div class="card m-2">
-                                                                <img src="/img/home-carousel/car-2.jpg" class="card-img-top" alt="car image" >
-                                                                <div class="card-body">
-                                                                    <h5 class="card-title">Card title</h5>
-                                                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                                                    <a href="#" class="btn btn-primary mt-2">Go somewhere</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                            -->
-
-                        </div>
+                        <div class="carousel-inner" id="carouselZone"></div>
 
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls4" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -654,13 +577,11 @@
 
             console.log(currentCarouselId,multipleItemCarousel)
 
-            if(window.matchMedia("(min-width:576px)").matches){
+            if (window.matchMedia("(min-width:576px)").matches){
                 const carousel = new bootstrap.Carousel(multipleItemCarousel, {
                     interval: false,
                     wrap: false
                 });
-
-
 
                 const cardWidth = 304 // TODO HARDCODED
 
@@ -681,6 +602,7 @@
                         $(currentCarouselId + ' .carousel-inner').animate({scrollLeft: scrollPosition},600);
                     }
                 });
+
                 $(currentCarouselId + ' .carousel-control-prev').on('click', function(){
                     // Calculate carousel width
                     const carouselWidth = $(currentCarouselId + ' .carousel-inner')[0].scrollWidth;
@@ -701,11 +623,7 @@
             }
         });
     });
-
-
-
 </script>
-
 
 </body>
 </html>
