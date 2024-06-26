@@ -1,9 +1,6 @@
 package com.example.carbook.controller;
 
-import com.example.carbook.model.booking.Booking;
-import com.example.carbook.model.booking.BookingPreview;
-import com.example.carbook.model.booking.ExtendBookingRequest;
-import com.example.carbook.model.booking.Request;
+import com.example.carbook.model.booking.*;
 import com.example.carbook.service.BookingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +72,18 @@ public class BookController {
 
             bookingService.extendBooking(request);
 
+            return ResponseEntity.status(HttpStatus.OK).body("Request completed");
+        } catch (Exception e){
+            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(path = "/bookForAuction")
+    public ResponseEntity<String> bookForAuction(@RequestBody AuctionRequest request, @RequestHeader("Logged-In-User") String username){
+        try {
+
+            bookingService.setBookingForAuction(request.getCid());
             return ResponseEntity.status(HttpStatus.OK).body("Request completed");
         } catch (Exception e){
             log.info(e.getMessage());

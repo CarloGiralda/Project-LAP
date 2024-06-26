@@ -75,4 +75,15 @@ public class AuctionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @DeleteMapping(path = "/delete_auction")
+    public ResponseEntity<?> deleteAuction(@RequestParam("auctionId") Long auctionId,@RequestHeader("Logged-In-User") String username){
+        try {
+            auctionService.deleteAuction(auctionId);
+            return ResponseEntity.status(HttpStatus.OK).body("auction removed");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

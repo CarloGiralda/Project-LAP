@@ -312,7 +312,6 @@ public class BookingService {
 
 
 
-
     private static boolean isAvailable(String fromDay, String toDay, String fromHour, String toHour){
         // Parse date and time strings
         LocalDate fromDate = LocalDate.parse(fromDay, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -360,5 +359,34 @@ public class BookingService {
 
     }
 
+    public void setBookingForAuction(Long cid) throws Exception {
+
+        /*Booking booking = isAvailableForAuction(cid);
+        setBooking(booking);*/
+
+    }
+
+    /*private Booking isAvailableForAuction(Long cid){
+        // check if car is available from now
+        LocalDateTime now = LocalDateTime.now();
+        // Round to the nearest hour
+        LocalDateTime roundedTime = now.withMinute(0).withSecond(0).withNano(0);
+
+        roundedTime = roundedTime.plusHours(1);
+
+        // Format the date and time
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        String formattedDate = roundedTime.format(dateFormatter);
+        String formattedTime = roundedTime.format(timeFormatter);
+
+        // Output the formatted date and time
+        System.out.println("Date: " + formattedDate);
+        System.out.println("Time: " + formattedTime);
+
+        //if (isAvailable())
+
+    }*/
 }
 

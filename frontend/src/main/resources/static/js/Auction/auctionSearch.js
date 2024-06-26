@@ -567,6 +567,20 @@ class RaftNode {
         document.getElementById('value').style.display = 'block';
         if (this.finalValue == this.bid) {
             // TODO Here code to confirm booking
+            const serverUrl = 'http://localhost:8080/auction/delete_auction?auctionId=' + auction;
+
+            fetch(serverUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': "Bearer " + token
+                },
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+
+
             document.getElementById('value').textContent = 'You win the auction';
         } else {
             document.getElementById('value').textContent = 'You lost the auction';

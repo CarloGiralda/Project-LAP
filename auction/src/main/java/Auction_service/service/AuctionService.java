@@ -77,5 +77,16 @@ public class AuctionService {
             throw new Exception(e.getMessage());
         }
     }
+
+    public void deleteAuction(Long auctionId) throws Exception{
+        try {
+            auctionRepository.deleteById(auctionId);
+        } catch (DataIntegrityViolationException e){
+            log.info("constraints exception");
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
 }
 
