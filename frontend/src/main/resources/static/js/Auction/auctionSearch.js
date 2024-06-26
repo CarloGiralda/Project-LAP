@@ -55,18 +55,6 @@ async function addButtons(body) {
         const imageWrapper = document.createElement("div");
         imageWrapper.className = "image-wrapper";
 
-        // TODO test this part
-        const carInfo = await getCarInfo( body[x]["cid"] );
-
-        // Create an image element
-        const cardImage = document.createElement("img");
-        cardImage.className = "card-img-top";
-        console.log(carInfo["image"])
-        cardImage.src = URL.createObjectURL(carInfo["image"]); // Assuming 'imageUrl' is the key in 'body' object
-        cardImage.alt = "Car Image"; // Alternative text for the image
-
-        imageWrapper.appendChild(cardImage);
-
         const cardBody = document.createElement( "div" );
         cardBody.className = "card-body";
 
@@ -76,7 +64,29 @@ async function addButtons(body) {
 
         const cardText = document.createElement( "p" );
         cardText.className = "card-text";
-        cardText.textContent = "Date: " + body[x]["startDate"] + "\nCar: " + body["car"]["brand"] + " " + body["car"]["model"];
+        cardText.textContent = "Date: " + body[x]["startDate"]
+        const cardImage = document.createElement("img");
+        cardImage.className = "card-img-top";
+        cardImage.alt = "Car Image"; // Alternative text for the image
+
+        fetch("http://localhost:8080/carsearch/getCarModelBrandImage/" + body[x]["cid"], {
+            method: 'GET',
+            headers: {
+                'Authorization': "Bearer " + token
+            },
+        }).then(function (response) {
+            return response.json();
+        }).then(function (body) {
+            if (body["image"] !== null) {
+                const image = new Blob([new Uint8Array(body["image"])], {type: 'image/jpeg'});
+                const name = body["brand"] + " model " + body["model"];
+
+                cardText.textContent += "\nCar: " + name;
+                cardImage.src = URL.createObjectURL(image); // Assuming 'imageUrl' is the key in 'body' object
+            }
+        })
+
+        imageWrapper.appendChild(cardImage);
 
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
@@ -109,50 +119,6 @@ async function addButtons(body) {
         card.appendChild(btn);
         cardContainer.append(card)
     }
-}
-
-async function getCarInfo(id){
-
-    var getUrl = "http://localhost:8080/carsearch/getCarModelBrandImage/" + id;
-
-    const response = await fetch( getUrl, {
-        method: 'GET',
-        headers: {
-            'Authorization': "Bearer " + token
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const blob = new Blob( [new Uint8Array( response["image"] )], {type: 'image/jpeg'} );
-    return {
-        "name": response["brand"] + " " + response["model"],
-        "image": blob
-    }
-
-
-    /*
-    return await fetch( getUrl, {
-        method: 'GET',
-        headers: {
-            'Authorization': "Bearer " + token
-        },
-    } ).then( function (response) {
-        return response.json();
-    } ).then( async function (body) {
-        console.log(body)
-        if (body["image"] !== null) {
-            const blob = new Blob( [new Uint8Array( body["image"] )], {type: 'image/jpeg'} );
-            console.log( "car image not null" )
-
-            return {
-                "name": body["brand"] + " " + body["model"],
-                "image": blob
-            }
-        }
-    })*/
-
 }
 
 function clearButtons() {
@@ -607,6 +573,7 @@ class RaftNode {
 
             // send the payment
             const payer_username = sessionStorage.getItem("username");
+            const price = this.finalValue;
             fetch("http://localhost:8080/carsearch/getRenterUsername?id=" + carId, {
                 method: 'GET',
                 headers: {
@@ -618,8 +585,6 @@ class RaftNode {
                 })
                 .then(function (body) {
                     const beneficiary_username = body["renter"];
-
-                    const price = this.finalValue;
 
                     const data = {
                         senderUsername: payer_username,
@@ -640,7 +605,7 @@ class RaftNode {
 
             document.getElementById('value').textContent = 'You won the auction!\n' +
                 'Congratulations!\n' +
-                this.finalValue + 'coins have been payed\n' +
+                price + ' coins have been payed\n' +
                 'Check your reservations for more details';
         } else {
             document.getElementById('value').textContent = 'You lost the auction';
