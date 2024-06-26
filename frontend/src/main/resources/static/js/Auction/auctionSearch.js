@@ -566,6 +566,7 @@ class RaftNode {
         this.committed = true;
         document.getElementById('value').style.display = 'block';
         if (this.finalValue == this.bid) {
+
             // TODO Here code to confirm booking
             const serverUrl = 'http://localhost:8080/auction/delete_auction?auctionId=' + auction;
 

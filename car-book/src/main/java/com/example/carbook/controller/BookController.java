@@ -83,7 +83,7 @@ public class BookController {
     public ResponseEntity<String> bookForAuction(@RequestBody AuctionRequest request, @RequestHeader("Logged-In-User") String username){
         try {
 
-            bookingService.setBookingForAuction(request.getCid());
+            bookingService.setBookingForAuction(request.getCid(), username);
             return ResponseEntity.status(HttpStatus.OK).body("Request completed");
         } catch (Exception e){
             log.info(e.getMessage());

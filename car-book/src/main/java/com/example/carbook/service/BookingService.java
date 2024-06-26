@@ -359,34 +359,67 @@ public class BookingService {
 
     }
 
-    public void setBookingForAuction(Long cid) throws Exception {
+    public Boolean getCarAvailabilityForAuction(String username,Long cid, String fromDay, String toDay, String fromHour, String toHour) {
+        List<Booking> overlappingBookings =  bookingRepository.findOverlappingBookings(
+                cid,
+                fromDay,
+                toDay,
+                fromHour,
+                toHour);
 
-        /*Booking booking = isAvailableForAuction(cid);
-        setBooking(booking);*/
+        List<Booking> overlappingBookingsForUser =  bookingRepository.findOverlappingBookingsForUser(
+                fromDay,
+                toDay,
+                fromHour,
+                toHour,
+                username);
+
+        return overlappingBookings.isEmpty() && overlappingBookingsForUser.isEmpty();
+
 
     }
 
-    /*private Booking isAvailableForAuction(Long cid){
+
+    public void setBookingForAuction(Long cid, String username) throws Exception {
+
+        Booking booking = checkCarAvailabilityForNextHour(cid, username);
+        if (booking != null) {
+            setBooking(booking);
+        }
+
+    }
+
+    private Booking checkCarAvailabilityForNextHour(Long cid, String username){
         // check if car is available from now
         LocalDateTime now = LocalDateTime.now();
-        // Round to the nearest hour
-        LocalDateTime roundedTime = now.withMinute(0).withSecond(0).withNano(0);
 
-        roundedTime = roundedTime.plusHours(1);
+        // Calculate date and time one hour from now
+        LocalDateTime oneHourFromNow = now.plusHours(1);
 
-        // Format the date and time
+        // Define formatters
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        String formattedDate = roundedTime.format(dateFormatter);
-        String formattedTime = roundedTime.format(timeFormatter);
+        // Format the current and future date and time
+        String fromDay = now.format(dateFormatter);
+        String fromHour = now.format(timeFormatter);
+        String toDay = oneHourFromNow.format(dateFormatter);
+        String toHour = oneHourFromNow.format(timeFormatter);
 
-        // Output the formatted date and time
-        System.out.println("Date: " + formattedDate);
-        System.out.println("Time: " + formattedTime);
+        // Call the isAvailable method with formatted strings
+        if (getCarAvailabilityForAuction(username, cid, fromDay, toDay, fromHour, toHour)){
+            return new Booking(
+                    cid,
+                    fromDay,
+                    toDay,
+                    fromHour,
+                    toHour,
+                    fromDay,
+                    username,
+                    "Nice car");
+        };
 
-        //if (isAvailable())
-
-    }*/
+        return null;
+    }
 }
 
