@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AuctionRequest {
+
     private Long cid;
 }
