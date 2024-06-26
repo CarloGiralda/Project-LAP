@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 
-function addButtons(body) {
+async function addButtons(body) {
     const rowsAdded = body.length;
     const cardContainer = document.getElementById( "list" );
 
@@ -56,7 +56,7 @@ function addButtons(body) {
         imageWrapper.className = "image-wrapper";
 
         // TODO test this part
-        const carInfo = getCarInfo( body[x]["cid"] );
+        const carInfo = await getCarInfo( body[x]["cid"] );
 
         // Create an image element
         const cardImage = document.createElement("img");
@@ -112,8 +112,27 @@ function addButtons(body) {
 }
 
 async function getCarInfo(id){
+
     var getUrl = "http://localhost:8080/carsearch/getCarModelBrandImage/" + id;
 
+    const response = await fetch( getUrl, {
+        method: 'GET',
+        headers: {
+            'Authorization': "Bearer " + token
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const blob = new Blob( [new Uint8Array( response["image"] )], {type: 'image/jpeg'} );
+    return {
+        "name": response["brand"] + " " + response["model"],
+        "image": blob
+    }
+
+
+    /*
     return await fetch( getUrl, {
         method: 'GET',
         headers: {
@@ -132,7 +151,7 @@ async function getCarInfo(id){
                 "image": blob
             }
         }
-    })
+    })*/
 
 }
 
