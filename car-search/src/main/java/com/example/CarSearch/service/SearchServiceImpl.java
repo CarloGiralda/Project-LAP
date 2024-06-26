@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -119,6 +120,9 @@ public class SearchServiceImpl implements SearchService {
     public String getCarById(Long id) {
         return carRepo.findCarById(id);
     }
+
+    @Override
+    public byte[] getCarImageById(Long id) { return carRepo.findCarImageById(id); }
 
     @Override
     public String getRenter(Long id) {

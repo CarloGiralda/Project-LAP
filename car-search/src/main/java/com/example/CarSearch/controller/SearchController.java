@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,5 +108,16 @@ public class SearchController {
         obj.addProperty("renter", renter);
         String object = obj.toString();
         return new ResponseEntity<>(object, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getCarModelBrandImage/{id}")
+    public ResponseEntity<?> getCarModelBrandImage(@PathVariable Long id) {
+        String car = searchService.getCarById(id);
+        String[] names = car.split(",");
+        String brand = names[0];
+        String model = names[1];
+        byte[] image = searchService.getCarImageById(id);
+        ReturnDTO dto = new ReturnDTO(id, brand, model, "", image);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

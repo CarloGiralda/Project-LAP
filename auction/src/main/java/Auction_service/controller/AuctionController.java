@@ -1,7 +1,6 @@
 package Auction_service.controller;
 
 
-import Auction_service.model.Auction;
 import Auction_service.model.dto.AuctionDto;
 import Auction_service.model.dto.SubscribeDto;
 import Auction_service.service.AuctionService;

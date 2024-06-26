@@ -5,6 +5,7 @@ var peersIds = null;
 var token = getCookie("jwtToken");
 var serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
 var auction;
+var carId;
 var timestamp;
 var myPeerId;
 
@@ -60,6 +61,7 @@ function addButtons(body) {
         // Create an image element
         const cardImage = document.createElement("img");
         cardImage.className = "card-img-top";
+        console.log(carInfo["image"])
         cardImage.src = URL.createObjectURL(carInfo["image"]); // Assuming 'imageUrl' is the key in 'body' object
         cardImage.alt = "Car Image"; // Alternative text for the image
 
@@ -87,9 +89,11 @@ function addButtons(body) {
 
         // Set custom data attribute to store the index 'x'
         btn.customField = body[x]["auctionId"];
+        btn.customField2 = body[x]["cid"];
 
         btn.addEventListener('click', function subscribe(event) {
             auction = event.currentTarget.customField;
+            carId = event.currentTarget.customField2;
             peer = new Peer();
             peer.on('open', function (peerId) {
                 myPeerId = peerId
@@ -108,7 +112,7 @@ function addButtons(body) {
 }
 
 async function getCarInfo(id){
-    var getUrl = "http://localhost:8080/carsearch/getCarById/" + id;
+    var getUrl = "http://localhost:8080/carsearch/getCarModelBrandImage/" + id;
 
     return await fetch( getUrl, {
         method: 'GET',
@@ -118,18 +122,17 @@ async function getCarInfo(id){
     } ).then( function (response) {
         return response.json();
     } ).then( async function (body) {
-        if (body["car"]["image"] !== null) {
-            const blob = new Blob( [new Uint8Array( body["car"]["image"] )], {type: 'image/jpeg'} );
-            const image = document.getElementById( "image" );
-            image.src = URL.createObjectURL( blob )
+        console.log(body)
+        if (body["image"] !== null) {
+            const blob = new Blob( [new Uint8Array( body["image"] )], {type: 'image/jpeg'} );
             console.log( "car image not null" )
 
             return {
-                "name": body["car"]["brand"] + " " + body["car"]["model"],
+                "name": body["brand"] + " " + body["model"],
                 "image": blob
             }
         }
-    } )
+    })
 
 }
 
@@ -566,7 +569,8 @@ class RaftNode {
         this.committed = true;
         document.getElementById('value').style.display = 'block';
         if (this.finalValue == this.bid) {
-            // TODO Here code to confirm booking
+
+            // delete auction from available ones
             const serverUrl = 'http://localhost:8080/auction/delete_auction?auctionId=' + auction;
 
             fetch(serverUrl, {
@@ -580,11 +584,47 @@ class RaftNode {
                     return response.json();
                 })
 
+            // book a reservation
 
-            document.getElementById('value').textContent = 'You win the auction';
+            // send the payment
+            const payer_username = sessionStorage.getItem("username");
+            fetch("http://localhost:8080/carsearch/getRenterUsername?id=" + carId, {
+                method: 'GET',
+                headers: {
+                    'Authorization': "Bearer " + token
+                }
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (body) {
+                    const beneficiary_username = body["renter"];
+
+                    const price = this.finalValue;
+
+                    const data = {
+                        senderUsername: payer_username,
+                        receiverUsername: beneficiary_username,
+                        price: Number(price),
+                    };
+
+                    // extract the username from the jwt token
+                    fetch("http://localhost:8080/payment/createTransaction", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': "application/json",
+                            'Authorization': "Bearer " + token
+                        },
+                        body: JSON.stringify(data)
+                    })
+                })
+
+            document.getElementById('value').textContent = 'You won the auction!\n' +
+                'Congratulations!\n' +
+                this.finalValue + 'coins have been payed\n' +
+                'Check your reservations for more details';
         } else {
             document.getElementById('value').textContent = 'You lost the auction';
         }
     }
 }
-

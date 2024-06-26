@@ -76,6 +76,17 @@
       margin: 10px;
     }
 
+    .explanation {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      max-width: 600px;
+      margin: 20px auto;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #666;
+      line-height: 1.6;
+    }
 
     .image-wrapper {
       width: 50%; /* Adjust width as needed */
@@ -88,9 +99,6 @@
     .card-body {
       flex: 1; /* Take remaining space */
     }
-
-
-
   </style>
 </head>
 
@@ -170,7 +178,6 @@
           </li>
         </ul>
       </div>
-
     </div>
   </nav>
 </header>
@@ -183,6 +190,11 @@
     <div class="album py-5">
       <div class="container">
         <h1 id="title">Auctions</h1>
+
+        <p class="explanation">
+          The car renting will start at the next hour after the auction ends, and will last for an hour
+          (e.g. if the auction ends at 15:55, then the booking will start at 16:00 and will end at 17:00)
+        </p>
 
         <!--HERE DYNAMICALLY INSERT AUCTIONS-->
         <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list"></div>
@@ -198,6 +210,8 @@
 
         <!-- Final Value -->
         <p id="value">
+
+        <button type="button" onclick="window.location.href='http://localhost:8081/'" class="btn btn-secondary mt-sm-4 w-50" style="flex: 1;">Go back</button>
       </div>
     </div>
   </div>

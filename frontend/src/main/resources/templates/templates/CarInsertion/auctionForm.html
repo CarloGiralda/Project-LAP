@@ -25,6 +25,17 @@
             border: 6px solid transparent; /* Ensure the border is solid */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
         }
+        .explanation {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #666;
+            line-height: 1.6;
+        }
     </style>
 
 </head>
@@ -130,6 +141,11 @@
                         <label for="time">Time:</label>
                         <input type="time" class="form-control" id="time">
                     </div>
+
+                    <p class="explanation">
+                        The car renting will start at the next hour after the auction ends, and will last for an hour
+                        (e.g. if the auction ends at 15:55, then the booking will start at 16:00 and will end at 17:00)
+                    </p>
 
                 </div>
 
