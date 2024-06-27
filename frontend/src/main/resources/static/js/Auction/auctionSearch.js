@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('bidButton').addEventListener('click', () => {
         const bid = document.getElementById('bid').value; // fetch from user
         document.getElementById('yourValue').textContent = 'Your bid: ' + bid;
+        document.getElementById('bidLabel').style.display = 'none'
         document.getElementById('bid').style.display = 'none';
         document.getElementById('bidButton').style.display = 'none';
         document.getElementById('status').textContent = 'Waiting for final result of auction...';
@@ -208,11 +209,12 @@ function fetchPeerIdsFromServer() {
             return response.json();
         })
         .then(data => {
-            console.log(data);
-            peersIds = data;
-            isReadyAuction = true;
-            document.getElementById('bid').style.display = 'block';
-            document.getElementById('bidButton').style.display = 'block';
+            console.log(data)
+            peersIds = data
+            isReadyAuction = true
+            document.getElementById('bidLabel').style.display = 'block'
+            document.getElementById('bid').style.display = 'block'
+            document.getElementById('bidButton').style.display = 'block'
 
         })
         .catch(error => {
@@ -555,7 +557,7 @@ class RaftNode {
     commitFunction() {
         this.committed = true;
         document.getElementById('value').style.display = 'block';
-        if (this.finalValue === this.bid) {
+        if (Number(this.finalValue) === Number(this.bid)) {
 
             // 1 - delete auction from available ones
             this.deleteSubscription()
@@ -574,7 +576,7 @@ class RaftNode {
             this.showFinalMessage(true, message)
         } else {
             const message = "You lost the auction!"
-            this.showFinalMessage(true, message)
+            this.showFinalMessage(false, message)
         }
     }
 
@@ -595,15 +597,18 @@ class RaftNode {
     }
 
     bookCar(){
+
+        const auctionRequest = {
+            cid: carId // Replace with the actual `cid` value
+        }
+
         fetch( "http://localhost:8080/reservation/bookForAuction", {
             method: 'POST',
             headers: {
                 'Content-Type': "application/json",
                 'Authorization': "Bearer " + token
             },
-            body: JSON.stringify( {
-                "cid": carId
-            } )
+            body: JSON.stringify(auctionRequest)
         } ).then( r => {
             if (!r.ok) {
                 throw new Error('An error occurred, car not booked!');

@@ -96,6 +96,7 @@ public class BookingService {
                 // define the message to send by email
                 BookedCar bookedCar = new BookedCar(booking.getCid(), renter,booking.getUsername());
 
+                log.info("Username returned from carsearch: {}", renter);
                 // notify renter
                 sendEmail(bookedCar);
 
