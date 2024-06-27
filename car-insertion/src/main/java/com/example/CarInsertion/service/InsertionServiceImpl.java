@@ -52,9 +52,14 @@ public class InsertionServiceImpl implements InsertionService{
     @Override
     public AuctionDTO insertAuction(AuctionDTO dto) {
         Auction auction = dto.getAuction();
+        Offer offer = dto.getOffer();
         Utilities ut = dto.getUtilities();
         Car car = dto.getCar();
         Utilities resultUt = utilitiesRepo.save(ut);
+
+        offer.setPricePerHour("-1");
+        Offer offerResult = offerRepo.save(offer);
+        car.setOffer_oid(offerResult);
         car.setUtilities_utid(resultUt);
         Car resultCar = carRepo.save(dto.getCar());
 
@@ -63,7 +68,7 @@ public class InsertionServiceImpl implements InsertionService{
         String auctionUrl = discoveryClientService.getServiceUrl("AUCTION-SERVICE")+  "/auction/create";
         restTemplate.postForEntity(auctionUrl, auction, String.class);
 
-        return new AuctionDTO(resultCar, auction, resultUt);
+        return new AuctionDTO(resultCar, auction, offer, resultUt);
     }
 
     private void notifySubscribedUser(Long cid, String zone){

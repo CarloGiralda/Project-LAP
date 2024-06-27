@@ -82,7 +82,9 @@ public class SearchRepoImpl implements SearchRepo {
         }
         if (dto.getOffer().getPricePerHour() != null) {
             Predicate pred15 = criteriaBuilder.lessThanOrEqualTo(offerOfCar.get("pricePerHour"), dto.getOffer().getPricePerHour());
+            Predicate pred15Bis = criteriaBuilder.greaterThan(offerOfCar.get("pricePerHour"), "-1");
             predList.add(pred15);
+            predList.add(pred15Bis);
         }
         if (dto.getOffer().getZoneLocation() != null) {
             Predicate pred29 = criteriaBuilder.equal(offerOfCar.get("zoneLocation"), dto.getOffer().getZoneLocation());

@@ -20,6 +20,7 @@ public class InsertionController {
 
     public InsertionController(InsertionService insertionService) {
         super();
+        this.bool = false;
         this.dto = new InsertionDTO();
         this.auctionDTO = new AuctionDTO();
         this.insertionService = insertionService;
@@ -30,15 +31,19 @@ public class InsertionController {
         if (offer.hasEmptyFields()) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
-        this.dto.setOffer(offer);
-        this.bool = true;
+
+        if (this.bool){
+            auctionDTO.setOffer(offer);
+        } else {
+            this.dto.setOffer(offer);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/insertauction")
     public ResponseEntity<String> saveAuctionForm(@RequestBody Auction auction, @RequestHeader("Logged-In-User") String username) {
         this.auctionDTO.setAuction(auction);
-        this.bool = false;
+        this.bool = true;
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -51,9 +56,9 @@ public class InsertionController {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
         if (this.bool) {
-            this.dto.setCar(car);
-        } else {
             this.auctionDTO.setCar(car);
+        } else {
+            this.dto.setCar(car);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -64,11 +69,11 @@ public class InsertionController {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
         if (this.bool) {
-            this.dto.setUtilities(ut);
-            insertionService.insert(this.dto);
-        } else {
             this.auctionDTO.setUtilities(ut);
             insertionService.insertAuction(this.auctionDTO);
+        } else {
+            this.dto.setUtilities(ut);
+            insertionService.insert(this.dto);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

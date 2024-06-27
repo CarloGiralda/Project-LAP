@@ -27,7 +27,7 @@ async function submitForm() {
 
     // Replace these URLs with the ones you want to use
     var postUrl = "http://localhost:8080/carinsert/insertauction";
-    var successUrl = "http://localhost:8081/carinsert/insertcar";
+    var successUrl = "http://localhost:8081/carinsert/insertoffer";
     var problemUrl = "http://localhost:8081/failed";
 
     var date = document.getElementById("date").value;

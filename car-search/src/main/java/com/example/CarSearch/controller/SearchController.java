@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RequestMapping(path = "/carsearch")
@@ -28,11 +29,15 @@ public class SearchController {
         List<SearchDTO> cars = searchService.getCar(sdto);
         ArrayList<ReturnDTO> response = new ArrayList<>();
         for (SearchDTO car : cars) {
-            response.add(new ReturnDTO(car.getCar().getCid(),
-                    car.getCar().getBrand(),
-                    car.getCar().getModel(),
-                    car.getOffer().getPricePerHour(),
-                    car.getCar().getImage()));
+
+            if (!Objects.equals(car.getOffer().getPricePerHour(), "-1")){
+                response.add(new ReturnDTO(car.getCar().getCid(),
+                        car.getCar().getBrand(),
+                        car.getCar().getModel(),
+                        car.getOffer().getPricePerHour(),
+                        car.getCar().getImage()));
+            }
+
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

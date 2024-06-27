@@ -8,14 +8,16 @@ import lombok.Setter;
 public class AuctionDTO {
     private Car car;
     private Auction auction;
+    private Offer offer;
     private Utilities utilities;
 
     public AuctionDTO() {
     }
 
-    public AuctionDTO(Car car, Auction auction, Utilities utilities) {
+    public AuctionDTO(Car car, Auction auction, Offer offer, Utilities utilities) {
         this.car = car;
         this.auction = auction;
+        this.offer = offer;
         this.utilities = utilities;
     }
 }
