@@ -153,12 +153,10 @@ function subscribeToServer(peerId, auctionId) {
         });
 }
 
-function startTimer() {
-    const timerElement = document.getElementById( 'timer' );
+function startTimer(endTimeToConvert) {
+    var timerElement = document.getElementById('timer');
     timerElement.style.display = 'flex';
-
-    // TODO test it
-    const endTime = new Date().getTime() + 60 * 1000; // use 1 minute
+    var endTime = new Date(endTimeToConvert).getTime();
 
     function formatTime(seconds) {
         const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -168,10 +166,10 @@ function startTimer() {
     }
 
     function updateTimer() {
-
-        // TODO test it
-        const now = new Date().getTime();
-        const remainingTime = Math.floor( (endTime - now) / 1000 );
+        var now = new Date();
+        var romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
+        var romeTime = now.getTime() + romeOffset;
+        var remainingTime = Math.floor((endTime - romeTime) / 1000); // Remaining time in seconds
 
         if (remainingTime <= 0) {
             clearInterval(interval);
@@ -562,7 +560,7 @@ class RaftNode {
             // 1 - delete auction from available ones
             this.deleteSubscription()
 
-            // 2 - TODO book a reservation
+            // 2 - book a reservation
             this.bookCar()
 
             // 3 - send the payment
@@ -591,8 +589,8 @@ class RaftNode {
                 'Authorization': "Bearer " + token
             },
         })
-            .then(function (response) {
-                return response.json();
+            .catch(function () {
+                document.getElementById('value').textContent = "Something has gone wrong";
             })
     }
 
@@ -644,22 +642,22 @@ class RaftNode {
                         'Authorization': "Bearer " + token
                     },
                     body: JSON.stringify( data )
-                } ).then(  r => console.log(r))
+                })
+                    .catch(function () {
+                        document.getElementById('value').textContent = "The reservation for the car has encountered some problems";
+                    })
             })
     }
 
     showFinalMessage(win, message){
-        if (win){
+        if (win) {
             document.getElementById('status').style.display = "none"
             document.getElementById('value').textContent = message
             document.getElementById('value').style.color = 'green'
-        }
-        else {
+        } else {
             document.getElementById('status').style.display = "none"
             document.getElementById('value').textContent = message
             document.getElementById('value').style.color = 'red';
         }
-
     }
-
 }
