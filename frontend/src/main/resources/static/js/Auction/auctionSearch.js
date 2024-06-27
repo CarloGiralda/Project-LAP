@@ -1,17 +1,17 @@
 // INIT
-var peer = null;
-var isReadyAuction = false;
-var peersIds = null;
-var token = getCookie("jwtToken");
-var serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
-var auction;
-var carId;
-var timestamp;
-var myPeerId;
+let peer = null;
+let isReadyAuction = false;
+let peersIds = null;
+const token = getCookie("jwtToken");
+const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
+let auction;
+let carId;
+let timestamp;
+let myPeerId;
 
 document.addEventListener('DOMContentLoaded', () => {
-    var serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
-    var searchUrl = serverUrl + "/search"
+    const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
+    const searchUrl = serverUrl + "/search";
 
     document.getElementById('bidButton').addEventListener('click', () => {
         const bid = document.getElementById('bid').value; // fetch from user
@@ -37,13 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
             clearButtons()
             addButtons(body)
         })
-        .catch(error => {
+        .catch(_ => {
             document.getElementById('status').textContent = 'Failed to fetch auctions...';
         });
 })
 
 
-async function addButtons(body) {
+function addButtons(body) {
     const rowsAdded = body.length;
     const cardContainer = document.getElementById( "list" );
 
@@ -152,10 +152,12 @@ function subscribeToServer(peerId, auctionId) {
         });
 }
 
-function startTimer(endTimeToConvert) {
-    var timerElement = document.getElementById('timer');
+function startTimer() {
+    const timerElement = document.getElementById( 'timer' );
     timerElement.style.display = 'flex';
-    var endTime = new Date(endTimeToConvert).getTime();
+
+    // TODO test it
+    const endTime = new Date().getTime() + 60 * 1000; // use 1 minute
 
     function formatTime(seconds) {
         const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -165,10 +167,10 @@ function startTimer(endTimeToConvert) {
     }
 
     function updateTimer() {
-        var now = new Date();
-        var romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
-        var romeTime = now.getTime() + romeOffset;
-        var remainingTime = Math.floor((endTime - romeTime) / 1000); // Remaining time in seconds
+
+        // TODO test it
+        const now = new Date().getTime();
+        const remainingTime = Math.floor( (endTime - now) / 1000 );
 
         if (remainingTime <= 0) {
             clearInterval(interval);
@@ -553,62 +555,106 @@ class RaftNode {
     commitFunction() {
         this.committed = true;
         document.getElementById('value').style.display = 'block';
-        if (this.finalValue == this.bid) {
+        if (this.finalValue === this.bid) {
 
-            // delete auction from available ones
-            const serverUrl = 'http://localhost:8080/auction/delete_auction?auctionId=' + auction;
+            // 1 - delete auction from available ones
+            this.deleteSubscription()
 
-            fetch(serverUrl, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': "Bearer " + token
-                },
-            })
-                .then(function (response) {
-                    return response.json();
-                })
+            // 2 - TODO book a reservation
+            this.bookCar()
 
-            // book a reservation
+            // 3 - send the payment
+            const price = this.finalValue
+            this.sendPayment(price)
 
-            // send the payment
-            const payer_username = sessionStorage.getItem("username");
-            const price = this.finalValue;
-            fetch("http://localhost:8080/carsearch/getRenterUsername?id=" + carId, {
-                method: 'GET',
-                headers: {
-                    'Authorization': "Bearer " + token
-                }
-            })
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (body) {
-                    const beneficiary_username = body["renter"];
-
-                    const data = {
-                        senderUsername: payer_username,
-                        receiverUsername: beneficiary_username,
-                        price: Number(price),
-                    };
-
-                    // extract the username from the jwt token
-                    fetch("http://localhost:8080/payment/createTransaction", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': "application/json",
-                            'Authorization': "Bearer " + token
-                        },
-                        body: JSON.stringify(data)
-                    })
-                })
-
-            document.getElementById('value').textContent = 'You won the auction!\n' +
+            const message = 'You won the auction!\n' +
                 'Congratulations!\n' +
                 price + ' coins have been payed\n' +
                 'Check your reservations for more details';
+            this.showFinalMessage(true, message)
         } else {
-            document.getElementById('value').textContent = 'You lost the auction';
+            const message = "You lost the auction!"
+            this.showFinalMessage(true, message)
         }
     }
+
+    deleteSubscription(){
+
+        const serverUrl = 'http://localhost:8080/auction/delete_auction?auctionId=' + auction;
+
+        fetch(serverUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            },
+        })
+            .then(function (response) {
+                return response.json();
+            })
+    }
+
+    bookCar(){
+        fetch( "http://localhost:8080/reservation/bookForAuction", {
+            method: 'POST',
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization': "Bearer " + token
+            },
+            body: JSON.stringify( {
+                "cid": carId
+            } )
+        } ).then( r => {
+            if (!r.ok) {
+                throw new Error('An error occurred, car not booked!');
+            }
+        } )
+    }
+
+    sendPayment(price){
+        const payer_username = sessionStorage.getItem("username");
+        fetch("http://localhost:8080/carsearch/getRenterUsername?id=" + carId, {
+            method: 'GET',
+            headers: {
+                'Authorization': "Bearer " + token
+            }
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (body) {
+                const beneficiary_username = body["renter"];
+
+                const data = {
+                    senderUsername: payer_username,
+                    receiverUsername: beneficiary_username,
+                    price: Number(price),
+                };
+
+                // extract the username from the jwt token
+                fetch( "http://localhost:8080/payment/createTransaction", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Authorization': "Bearer " + token
+                    },
+                    body: JSON.stringify( data )
+                } ).then(  r => console.log(r))
+            })
+    }
+
+    showFinalMessage(win, message){
+        if (win){
+            document.getElementById('status').style.display = "none"
+            document.getElementById('value').textContent = message
+            document.getElementById('value').style.color = 'green'
+        }
+        else {
+            document.getElementById('status').style.display = "none"
+            document.getElementById('value').textContent = message
+            document.getElementById('value').style.color = 'red';
+        }
+
+    }
+
 }

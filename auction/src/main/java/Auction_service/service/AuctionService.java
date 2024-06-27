@@ -80,6 +80,11 @@ public class AuctionService {
 
     public void deleteAuction(Long auctionId) throws Exception{
         try {
+
+            // first remove all auction subscription
+            auctionSubscriptionRepository.deleteByAuctionId(auctionId);
+
+            // then remove
             auctionRepository.deleteById(auctionId);
         } catch (DataIntegrityViolationException e){
             log.info("constraints exception");
