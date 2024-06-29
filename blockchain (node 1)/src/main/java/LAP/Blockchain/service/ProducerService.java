@@ -23,6 +23,5 @@ public class ProducerService {
     public void broadcastMessage(Block message) {
         this.template.convertAndSend("my-exchange", "", message);// broadcasts string message to each my-queue-* via my-exchange
 
-
     }
 }

@@ -25,7 +25,7 @@ import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
 
-@PropertySource("classpath:application.properties")
+
 @Service
 @Slf4j
 public class BlockchainService {

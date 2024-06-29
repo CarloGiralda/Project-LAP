@@ -17,11 +17,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.beans.ExceptionListener;
 import java.util.UUID;
 
 @Configuration
 @EnableRabbit
 public class MQConfig {
+
+    @Value("${spring.rabbitmq.host}")
+    private String host;
+
+    @Value("${spring.rabbitmq.port}")
+    private int port;
+
+    @Value("${spring.rabbitmq.username}")
+    private String username;
+
+    @Value("${spring.rabbitmq.password}")
+    private String password;
+
 
     @Bean
     public MessageConverter messageConverter(){
@@ -30,8 +44,15 @@ public class MQConfig {
 
     @Bean
     public ConnectionFactory connectionFactory(){
-        return new CachingConnectionFactory();
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+        connectionFactory.setPort(this.port);
+        connectionFactory.setHost(this.host);
+        connectionFactory.setUsername(this.username);
+        connectionFactory.setPassword(this.password);
+        return connectionFactory;
+
     }
+
 
     @Bean
     public AmqpAdmin amqpAdmin(){

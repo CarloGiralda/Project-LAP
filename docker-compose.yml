@@ -1,10 +1,10 @@
-version: '3'
+version: '3.8'
 services:
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - "8081:8081"
+  # frontend:
+  #   build: ./frontend
+  #   container_name: frontend
+  #   ports:
+  #     - "8081:8081"
   db:
     image: postgres:12.3-alpine
     container_name: db
@@ -17,60 +17,72 @@ services:
   rabbitmq:
     image: rabbitmq:3.12-management
     container_name: rabbitmq
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=guest'
+      - 'RABBITMQ_DEFAULT_USER=guest'
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+        #test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        test: ["CMD", "nc", "-z", "localhost", "5672"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 20s
   discovery:
     build: ./discovery
     container_name: discovery
     ports:
       - "8761:8761"
-  api-gw:
-    build: ./api
-    container_name: api-gw
-    ports:
-      - "8080:8080"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-    depends_on:
-      - discovery
-  user-service:
-    build: ./user
-    container_name: user-service
-    ports:
-      - "9000:9000"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-    depends_on:
-      - db
-      - discovery
-  area-service:
-    build: ./zone
-    container_name: area-service
-    ports:
-      - "9008:9008"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-    depends_on:
-      - db
-      - discovery
+    #network_mode: host
+  # api-gw:
+  #   build: ./api
+  #   container_name: api-gw
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #   depends_on:
+  #     - discovery
+  #   network_mode: host
+  # user-service:
+  #   build: ./user
+  #   container_name: user-service
+  #   ports:
+  #     - "9000:9000"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
+  #   depends_on:
+  #     - db
+  #     - discovery
+  # area-service:
+  #   build: ./zone
+  #   container_name: area-service
+  #   ports:
+  #     - "9008:9008"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
+  #   depends_on:
+  #     - db
+  #     - discovery
   
-  send-email:
-    build: ./email
-    container_name: send-email
-    ports:
-      - "9001:9001"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: update
-    depends_on:
-      - db
-      - discovery
+  # send-email:
+  #   build: ./email
+  #   container_name: send-email
+  #   ports:
+  #     - "9001:9001"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: update
+  #   depends_on:
+  #     - db
+  #     - discovery
   payment-service:
     build: ./payment
     container_name: payment-service
@@ -90,11 +102,15 @@ services:
       - "9011:9011"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_RABBITMQ_HOST: amqp://guest:guest@localhost:5672
+      # RABBITMQ_HOST: rabbitmq # Use the container name of RabbitMQ
+      # RABBITMQ_PORT: 5672       # Default RabbitMQ port
+      # RABBITMQ_USER: guest      # RabbitMQ username
+      # RABBITMQ_PASSWORD: guest  # RabbitMQ password
     depends_on:
-      - rabbitmq
-      - discovery
-#    network_mode: host
+      rabbitmq: 
+        condition: service_healthy
+      
+    #network_mode: host
   blockchain-service2:
     build: ./blockchain (node 2)
     container_name: blockchain-service2
@@ -102,63 +118,69 @@ services:
       - "9012:9012"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_RABBITMQ_HOST: amqp://guest:guest@localhost:5672
+      # RABBITMQ_HOST: host.docker.internal  # Use the container name of RabbitMQ
+      # RABBITMQ_PORT: 5672       # Default RabbitMQ port
+      # RABBITMQ_USER: guest      # RabbitMQ username
+      # RABBITMQ_PASSWORD: guest  # RabbitMQ password
     depends_on:
-      - rabbitmq
-      - discovery
-#    network_mode: host
-  car-insertion:
-    build: ./car-insertion
-    container_name: car-insertion
-    ports:
-      - "9002:9002"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-    depends_on:
-      - db
-      - discovery
-  car-search:
-    build: ./car-search
-    container_name: car-search
-    ports:
-      - "9003:9003"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: update
-    depends_on:
-      - db
-      - discovery
-      - car-insertion
-  car-rating:
-    build: ./car-rating
-    container_name: car-rating
-    ports:
-      - "9004:9004"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-    depends_on:
-      - db
-      - discovery
-      - car-insertion
-  car-book:
-    build: ./car-book
-    container_name: car-book
-    ports:
-      - "9005:9005"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-    depends_on:
-      - db
-      - rabbitmq
-      - discovery
-      - car-search
+      # - rabbitmq
+      # - discovery
+      rabbitmq: 
+        condition: service_healthy
+
+    #network_mode: host
+  # car-insertion:
+  #   build: ./car-insertion
+  #   container_name: car-insertion
+  #   ports:
+  #     - "9002:9002"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
+  #   depends_on:
+  #     - db
+  #     - discovery
+  # car-search:
+  #   build: ./car-search
+  #   container_name: car-search
+  #   ports:
+  #     - "9003:9003"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: update
+  #   depends_on:
+  #     - db
+  #     - discovery
+  #     - car-insertion
+  # car-rating:
+  #   build: ./car-rating
+  #   container_name: car-rating
+  #   ports:
+  #     - "9004:9004"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
+  #   depends_on:
+  #     - db
+  #     - discovery
+  #     - car-insertion
+  # car-book:
+  #   build: ./car-book
+  #   container_name: car-book
+  #   ports:
+  #     - "9005:9005"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
+  #   depends_on:
+  #     - db
+  #     - rabbitmq
+  #     - discovery
+  #     - car-search
 #    network_mode: host
 #  chat:
 #    build: ./chat
