@@ -26,6 +26,18 @@ public class MQConfig {
     @Value("${rabbitmq.mq-routing-key}")
     private String routingKey;
 
+    @Value("${spring.rabbitmq.host}")
+    private String host;
+
+    @Value("${spring.rabbitmq.port}")
+    private int port;
+
+    @Value("${spring.rabbitmq.username}")
+    private String username;
+
+    @Value("${spring.rabbitmq.password}")
+    private String password;
+
 
     @Bean
     public Queue queue(){
@@ -52,10 +64,13 @@ public class MQConfig {
 
     @Bean
     public ConnectionFactory connectionFactory(){
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
-        cachingConnectionFactory.setHost("rabbitmq");
-        cachingConnectionFactory.setPort(5672);
-        return cachingConnectionFactory;
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+        connectionFactory.setPort(this.port);
+        connectionFactory.setHost(this.host);
+        connectionFactory.setUsername(this.username);
+        connectionFactory.setPassword(this.password);
+        return connectionFactory;
+
     }
 
     @Bean

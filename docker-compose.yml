@@ -1,10 +1,10 @@
 version: '3.8'
 services:
-  # frontend:
-  #   build: ./frontend
-  #   container_name: frontend
-  #   ports:
-  #     - "8081:8081"
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8081:8081"
   db:
     image: postgres:12.3-alpine
     container_name: db
@@ -34,52 +34,64 @@ services:
     container_name: discovery
     ports:
       - "8761:8761"
-  # api-gw:
-  #   build: ./api
-  #   container_name: api-gw
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #   depends_on:
-  #     - discovery
-  #   network_mode: host
-  # user-service:
-  #   build: ./user
-  #   container_name: user-service
-  #   ports:
-  #     - "9000:9000"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
-  #   depends_on:
-  #     - db
-  #     - discovery
-  # area-service:
-  #   build: ./zone
-  #   container_name: area-service
-  #   ports:
-  #     - "9008:9008"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
-  #   depends_on:
-  #     - db
-  #     - discovery
-  # send-email:
-  #   build: ./email
-  #   container_name: send-email
-  #   ports:
-  #     - "9001:9001"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: update
-  #   depends_on:
-  #     - db
-  #     - discovery
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  api-gw:
+    build: ./api
+    container_name: api-gw
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      discovery:
+        condition: service_healthy
+  user-service:
+    build: ./user
+    container_name: user-service
+    ports:
+      - "9000:9000"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+  area-service:
+    build: ./zone
+    container_name: area-service
+    ports:
+      - "9008:9008"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+  send-email:
+    build: ./email
+    container_name: send-email
+    ports:
+      - "9001:9001"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
   payment-service:
     build: ./payment
     container_name: payment-service
@@ -90,8 +102,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
       SPRING_JPA_HIBERNATE_DDL-AUTO: create
     depends_on:
-      - db
-      - discovery
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
   blockchain-service:
     build: ./blockchain (node 1)
     container_name: blockchain-service1
@@ -101,7 +115,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       discovery:
-        condition: service_started
+        condition: service_healthy
       rabbitmq: 
         condition: service_healthy
   blockchain-service2:
@@ -113,91 +127,108 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     depends_on:
       discovery:
-        condition: service_started
+        condition: service_healthy
       rabbitmq: 
         condition: service_healthy
-  # car-insertion:
-  #   build: ./car-insertion
-  #   container_name: car-insertion
-  #   ports:
-  #     - "9002:9002"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
-  #   depends_on:
-  #     - db
-  #     - discovery
-  # car-search:
-  #   build: ./car-search
-  #   container_name: car-search
-  #   ports:
-  #     - "9003:9003"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: update
-  #   depends_on:
-  #     - db
-  #     - discovery
-  #     - car-insertion
-  # car-rating:
-  #   build: ./car-rating
-  #   container_name: car-rating
-  #   ports:
-  #     - "9004:9004"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
-  #   depends_on:
-  #     - db
-  #     - discovery
-  #     - car-insertion
-  # car-book:
-  #   build: ./car-book
-  #   container_name: car-book
-  #   ports:
-  #     - "9005:9005"
-  #   environment:
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #     - discovery
-  #     - car-search
-#  chat:
-#    build: ./chat
-#    container_name: chat
-#    ports:
-#      - "9006:9006"
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-#      BROKER_RELAY_HOST: chat
-#      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-#    depends_on:
-#      - db
-#  notification-service:
-#    build: ./notification
-#    container_name: notification-service
-#    ports:
-#     - "9007:9007"
-#    environment:
-#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-#    depends_on:
-#      - rabbitmq
-#      - discovery
-#  auction-service:
-#    build: ./auction
-#    container_name: auction-service
-#    ports:
-#     - "9013:9013"
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-#      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-#    depends_on:
-#      - discovery
-#      - db
+  car-insertion:
+    build: ./car-insertion
+    container_name: car-insertion
+    ports:
+      - "9002:9002"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+  car-search:
+    build: ./car-search
+    container_name: car-search
+    ports:
+      - "9003:9003"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+      car-insertion:
+        condition: service_started
+  car-rating:
+    build: ./car-rating
+    container_name: car-rating
+    ports:
+      - "9004:9004"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+      car-insertion:
+        condition: service_started
+  car-book:
+    build: ./car-book
+    container_name: car-book
+    ports:
+      - "9005:9005"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+      rabbitmq: 
+        condition: service_healthy
+      car-search:
+        condition: service_started
+  chat:
+    build: ./chat
+    container_name: chat
+    ports:
+      - "9006:9006"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      BROKER_RELAY_HOST: chat
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+  notification-service:
+    build: ./notification
+    container_name: notification-service
+    ports:
+     - "9007:9007"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      discovery:
+        condition: service_healthy
+      rabbitmq: 
+        condition: service_healthy
+  auction-service:
+    build: ./auction
+    container_name: auction-service
+    ports:
+     - "9013:9013"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy

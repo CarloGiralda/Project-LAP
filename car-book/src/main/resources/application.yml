@@ -27,9 +27,10 @@ spring:
     init:
       mode: always
   rabbitmq:
+    host: rabbitmq
     username: guest
     password: guest
-    addresses: localhost:5672
+    port: 5672
 
 rabbitmq:
   message-queue: car_subscription_queue
