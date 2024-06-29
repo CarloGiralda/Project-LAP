@@ -101,12 +101,6 @@ public class BlockchainService {
         }
 
         return blocks;
-
-
-        /*List<String> nodeIPs = discoveryClientService.getServiceInstances("BLOCKCHAIN-SERVICE");
-        SocketClient socketClient = new SocketClient(nodeIPs.get(0), 5001);
-        SocketServer socketServer = new SocketServer(5001);*/
-        // TODO after this, the connection happens on this socket
     }
 
     private List<ArrayList<Block>> branchesWithMaxLength(List<ArrayList<Block>> branches) {
