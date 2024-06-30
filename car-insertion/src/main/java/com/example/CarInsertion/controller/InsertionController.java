@@ -33,7 +33,7 @@ public class InsertionController {
         }
 
         if (this.bool){
-            auctionDTO.setOffer(offer);
+            this.auctionDTO.setOffer(offer);
         } else {
             this.dto.setOffer(offer);
         }

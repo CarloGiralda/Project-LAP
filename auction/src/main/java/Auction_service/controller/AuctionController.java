@@ -1,6 +1,7 @@
 package Auction_service.controller;
 
 
+import Auction_service.model.Auction;
 import Auction_service.model.dto.AuctionDto;
 import Auction_service.model.dto.SubscribeDto;
 import Auction_service.service.AuctionService;
@@ -37,9 +38,7 @@ public class AuctionController {
     @ResponseBody
     public ResponseEntity<String> createAuction(@RequestBody AuctionDto request){
         try {
-
             auctionService.saveAuction(request);
-
             return ResponseEntity.status(HttpStatus.CREATED).body("2");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -67,20 +66,17 @@ public class AuctionController {
     @GetMapping(path = "/search")
     public ResponseEntity<?> getAllAuction(@RequestHeader("Logged-In-User") String username){
         try {
-
-            return ResponseEntity.status(HttpStatus.OK).body(auctionService.getAllAuction());
-
+            return ResponseEntity.status(HttpStatus.OK).body(auctionService.getAllValidAuctions());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @DeleteMapping(path = "/delete_auction")
-    public ResponseEntity<?> deleteAuction(@RequestParam("auctionId") Long auctionId,@RequestHeader("Logged-In-User") String username){
+    public ResponseEntity<?> deleteAuction(@RequestParam("auctionId") Long auctionId, @RequestHeader("Logged-In-User") String username){
         try {
             auctionService.deleteAuction(auctionId);
             return ResponseEntity.status(HttpStatus.OK).body("auction removed");
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

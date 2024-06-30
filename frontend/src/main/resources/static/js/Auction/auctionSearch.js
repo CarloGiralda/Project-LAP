@@ -5,12 +5,13 @@ let peersIds = null;
 let auction;
 let carId;
 let myPeerId;
+let bid;
 
 const token = getCookie("jwtToken");
 const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
 const romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
 
-
+// TODO test the auction search (it should not show the auctions that took place in the past)
 document.addEventListener('DOMContentLoaded', () => {
     const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
     const searchUrl = serverUrl + "/search";
@@ -569,7 +570,6 @@ class RaftNode {
 
             const message = 'You won the auction!\n' +
                 'Congratulations!\n' +
-                price + ' coins have been payed\n' +
                 'Check your reservations for more details';
             this.showFinalMessage(true, message)
         } else {
@@ -577,6 +577,8 @@ class RaftNode {
             this.showFinalMessage(false, message)
         }
     }
+
+    // TODO test error field and the value field set to 'none'
 
     deleteSubscription(){
 
@@ -590,7 +592,10 @@ class RaftNode {
             },
         })
             .catch(function () {
-                document.getElementById('value').textContent = "Something has gone wrong";
+                document.getElementById('error').textContent = "You won the auction, but something has gone wrong";
+                // make the value field not visible
+                // one way to be sure that, in case of an error, the successful payment feedback is not visible
+                document.getElementById('value').style.display = 'none';
             })
     }
 
@@ -607,11 +612,17 @@ class RaftNode {
                 'Authorization': "Bearer " + token
             },
             body: JSON.stringify(auctionRequest)
-        } ).then( r => {
-            if (!r.ok) {
-                throw new Error('An error occurred, car not booked!');
-            }
-        } )
+        }).then(function (response) {
+            return response.json();
+        }).then(function (body) {
+            // TODO body should be equal to the bid returned by the booking service
+            bid = body;
+        }).catch(function (error) {
+            document.getElementById('error').textContent = "You won the auction, but the booking for the car has encountered some problems";
+            // make the value field not visible
+            // one way to be sure that, in case of an error, the successful payment feedback is not visible
+            document.getElementById('value').style.display = 'none';
+        })
     }
 
     sendPayment(price){
@@ -644,7 +655,19 @@ class RaftNode {
                     body: JSON.stringify( data )
                 })
                     .catch(function () {
-                        document.getElementById('value').textContent = "The reservation for the car has encountered some problems";
+                        // give visual feedback to the user about the error
+                        document.getElementById('error').textContent = "You won the auction, but the payment for the car has encountered some problems";
+                        // make the value field not visible
+                        // one way to be sure that, in case of an error, the successful payment feedback is not visible
+                        document.getElementById('value').style.display = 'none';
+
+                        // TODO check if the booking is deleted
+                        fetch("http://localhost:8080/reservation/deleteBooking/" + bid, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': "Bearer " + token
+                            }
+                        })
                     })
             })
     }

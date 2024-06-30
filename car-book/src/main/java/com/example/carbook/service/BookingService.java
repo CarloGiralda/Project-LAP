@@ -55,12 +55,11 @@ public class BookingService {
         this.bookingMap = new HashMap<>();
     }
 
-
     /**
      * Store booking in DB and HashMap and check whether some of the stored bookings
      * is expired, if yes it advertises the notification service to notify all subscribed user
      * that the car is now available**/
-    public void setBooking(Booking booking) throws Exception {
+    public Long setBooking(Booking booking) throws Exception {
 
         try {
 
@@ -77,7 +76,6 @@ public class BookingService {
                     booking.getFromHour(),
                     booking.getToHour(),
                     booking.getUsername());
-
 
             // before saving check not overlapping bookings for the same car
             if (overlappingBookings.isEmpty() && overlappingBookingsForUser.isEmpty()){
@@ -101,7 +99,7 @@ public class BookingService {
                 // notify renter
                 sendEmail(bookedCar);
 
-
+                return savedBooking.getBid();
             }
             else {
                 throw new DataIntegrityViolationException("overlapping bookings");
@@ -112,8 +110,6 @@ public class BookingService {
             throw new Exception(e.getMessage());
 
         }
-
-
     }
 
     private String getRenterUsername(Long cid) {
@@ -146,16 +142,13 @@ public class BookingService {
         String emailServiceUrl = discoveryClientService.getServiceUrl("SENDEMAIL-SERVICE") + "/email/sendCarBookedEmail";
         log.info("Sending request to email service at {}", emailServiceUrl);
 
-
         // make the request to email service
         ResponseEntity<String> response = restTemplate.postForEntity(emailServiceUrl, bookedCar, String.class);
 
         if (!response.getStatusCode().is2xxSuccessful()){
             throw new RuntimeException("error in the email sender");
         }
-
     }
-
 
     public void extendBooking(ExtendBookingRequest request) {
         try {
@@ -170,18 +163,15 @@ public class BookingService {
                 bookingRepository.save(booking);
             } );
 
-
             // update booking map with new expiration date
             if (bookingMap.containsKey(bid)){
                 bookingMap.get(bid).setToDay(request.getToDay());
                 bookingMap.get(bid).setToHour(request.getToHour());
             }
 
-
         } catch (Exception e){
             log.info(e.getMessage());
         }
-
     }
 
     public ArrayList<Booking> getBooking(String username, String flag, String param){
@@ -195,7 +185,6 @@ public class BookingService {
             default -> bookingRepository.findByUsernameAndCid(username, Long.parseLong(param));
         };
     }
-
 
     @Scheduled(fixedDelay = 10000)
     public void checkSubscribedUser(){
@@ -225,20 +214,13 @@ public class BookingService {
                         CarSubscriptionMessage carSubscriptionMessage = new CarSubscriptionMessage(set.getValue().getCid(),subscriptions);
                         template.convertAndSend(queue.getName(), carSubscriptionMessage);
                     }
-
-
-
                 }
-
             }
         }
         else {
             log.info("no booking is stored");
         }
-
     }
-
-
 
     private static boolean expired(String day, String hour, Boolean timeDelay){
         log.info("CHECK:{},{},{}", day,hour,timeDelay);
@@ -261,9 +243,6 @@ public class BookingService {
             return currentDateTime.isAfter(toDateTime);
         }
     }
-
-
-
 
     public ArrayList<BookingPreview> getBookingPreview(String username) {
         ArrayList<Booking> bookings = bookingRepository.findByUsername(username);
@@ -302,7 +281,6 @@ public class BookingService {
                            booking.getMadeDate())
                    );
                }
-
            }
            return bookingHistoryPreviews;
        } catch (Exception e){
@@ -311,8 +289,6 @@ public class BookingService {
        }
 
     }
-
-
 
     private static boolean isAvailable(String fromDay, String toDay, String fromHour, String toHour){
         // Parse date and time strings
@@ -333,10 +309,7 @@ public class BookingService {
         int fromDateComparison = currentDateTime.toLocalDate().compareTo(fromDateTime.toLocalDate());
         int toDateComparison = currentDateTime.toLocalDate().compareTo(toDateTime.toLocalDate());
         return !(fromDateComparison > 0 && toDateComparison < 0);
-
     }
-
-
 
     public Boolean getCarAvailability(Long carId) {
 
@@ -357,8 +330,6 @@ public class BookingService {
             }
         }
         return true;
-
-
     }
 
     public Boolean getCarAvailabilityForAuction(String username,Long cid, String fromDay, String toDay, String fromHour, String toHour) {
@@ -377,18 +348,17 @@ public class BookingService {
                 username);
 
         return overlappingBookings.isEmpty() && overlappingBookingsForUser.isEmpty();
-
-
     }
 
-
-    public void setBookingForAuction(Long cid, String username) throws Exception {
-
+    public Long setBookingForAuction(Long cid, String username) throws Exception {
         Booking booking = checkCarAvailabilityForNextHour(cid, username);
+        Long bid = null;
+
         if (booking != null) {
-            setBooking(booking);
+             bid = setBooking(booking);
         }
 
+        return bid;
     }
 
     private Booking checkCarAvailabilityForNextHour(Long cid, String username){
@@ -420,8 +390,12 @@ public class BookingService {
                     username,
                     "Nice car");
         };
-
         return null;
+    }
+
+    public void deleteBooking(Long bid) {
+        bookingRepository.deleteBookingByBid(bid);
+        bookingMap.remove(bid);
     }
 }
 

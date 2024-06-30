@@ -80,14 +80,16 @@ public class BookController {
     }
 
     @PostMapping(path = "/bookForAuction")
-    public ResponseEntity<String> bookForAuction(@RequestBody AuctionRequest request, @RequestHeader("Logged-In-User") String username){
+    public ResponseEntity<Long> bookForAuction(@RequestBody AuctionRequest request, @RequestHeader("Logged-In-User") String username){
         try {
-
-            bookingService.setBookingForAuction(request.getCid(), username);
-            return ResponseEntity.status(HttpStatus.OK).body("Request completed");
+            Long bid = bookingService.setBookingForAuction(request.getCid(), username);
+            if (bid != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(bid);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1L);
         } catch (Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(-1L);
         }
     }
 
@@ -136,6 +138,9 @@ public class BookController {
         }
     }
 
-
-
+    @DeleteMapping(path = "/deleteBooking/{bid}")
+    public ResponseEntity<?> deleteBooking(@PathVariable Long bid) {
+        bookingService.deleteBooking(bid);
+        return ResponseEntity.status(HttpStatus.OK).body("Booking deleted");
+    }
 }
