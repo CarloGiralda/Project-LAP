@@ -38,7 +38,7 @@ This application is built using a microservices architecture. Key components inc
 - **Eureka Server**: Service discovery for microservices.
 - **Microservices**: Independently deployable services for different functionalities.
 
-![Architecture Diagram](path/to/your/architecture/image)
+![LAP - architecture drawio](https://github.com/CarloGiralda/Project-LAP/assets/92364167/e84e18a6-f206-46a4-ac27-1911e59b9d9e)
 
 ## 🚀 Getting Started
 
