@@ -21,7 +21,7 @@
 
   <style>
     body, html {
-      height: 100%;
+      height: 50%;
       margin: 0;
       display: flex;
       flex-direction: column;
@@ -32,7 +32,7 @@
       justify-content: center;
       align-items: center;
       border-radius: 20px;
-      margin: 20% 3%;
+      margin: 1% 3%;
       font-size: 3em;
       color: white;
       text-align: center;
@@ -126,8 +126,22 @@
 
 <div class="container mt-5 w-50">
   <div class="row">
-      <a href="/carinsert/insertauction" class="btn btn-success form-control button button1">Insert a new Auction</a>
-      <a href="/carinsert/insertoffer" class="btn btn-success form-control button button2">Insert a new Offer</a>
+
+    <section class="py-3 text-center container">
+      <div class="row py-lg-3">
+        <div class="col-lg-6 col-md-6 mx-auto">
+          <p class="display-1 fw-light">Auction or car?</p>
+          <p class="lead text-body-primary">Here you can choose to insert a car for renting (other user can rent it and pay you), or you can decide to insert it for an auction: competing users will try to win the auction.
+          If your need is to quickly sell your car then the auction is the best option, but if you intend wait and decide the renting price for your car then the first option is preferred.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="d-flex justify-content-center align-items-center gap-4 mb-5">
+      <a href="/carinsert/insertauction" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill">Auction</a>
+      <a href="/carinsert/insertoffer" class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill">Car</a>
+    </div>
+
   </div>
 </div>
 

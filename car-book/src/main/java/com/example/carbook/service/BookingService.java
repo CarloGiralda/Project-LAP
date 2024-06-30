@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -392,8 +393,8 @@ public class BookingService {
 
     private Booking checkCarAvailabilityForNextHour(Long cid, String username){
         // check if car is available from now
-        LocalDateTime now = LocalDateTime.now();
-
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Rome")).plusMinutes(20);
+        
         // Calculate date and time one hour from now
         LocalDateTime oneHourFromNow = now.plusHours(1);
 

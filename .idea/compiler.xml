@@ -30,6 +30,7 @@
       <module name="Auction-service" options="-parameters" />
       <module name="Blockchain" options="-parameters" />
       <module name="Blockchain (1)" options="-parameters" />
+      <module name="Blockchain (2)" options="-parameters" />
       <module name="CarInsertion" options="-parameters" />
       <module name="CarRating" options="-parameters" />
       <module name="CarSearch" options="-parameters" />
