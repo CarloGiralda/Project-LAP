@@ -2,12 +2,14 @@
 let peer = null;
 let isReadyAuction = false;
 let peersIds = null;
-const token = getCookie("jwtToken");
-const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
 let auction;
 let carId;
-let timestamp;
 let myPeerId;
+
+const token = getCookie("jwtToken");
+const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
+const romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
@@ -148,28 +150,26 @@ function subscribeToServer(peerId, auctionId) {
         .then(data => {
             console.log('Subscription successful:', data);
             // Assuming data contains a timestamp or datetime string for the auction end time
-            timestamp = data;
-            startTimer(timestamp);
+            startTimer(data);
         });
 }
 
 function startTimer(endTimeToConvert) {
-    var timerElement = document.getElementById('timer');
+    const timerElement = document.getElementById( 'timer' );
     timerElement.style.display = 'flex';
-    var endTime = new Date(endTimeToConvert).getTime();
+    const endTime = new Date( endTimeToConvert );
 
-    function formatTime(seconds) {
-        const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-        const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-        const s = String(seconds % 60).padStart(2, '0');
-        return `${h}:${m}:${s}`;
+    function formatTime(time) {
+        const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((time % (1000 * 60)) / 1000);
+        return `${hours}h: ${minutes}m: ${seconds}s`;
     }
 
     function updateTimer() {
-        var now = new Date();
-        var romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
-        var romeTime = now.getTime() + romeOffset;
-        var remainingTime = Math.floor((endTime - romeTime) / 1000); // Remaining time in seconds
+        const now = new Date()
+        const nowUTC = new Date(now.toISOString());
+        const remainingTime = endTime - nowUTC - romeOffset
 
         if (remainingTime <= 0) {
             clearInterval(interval);
@@ -184,7 +184,7 @@ function startTimer(endTimeToConvert) {
     updateTimer();
 
     // Update the timer every second
-    var interval = setInterval(updateTimer, 1000);
+    const interval = setInterval(updateTimer, 1000);
 }
 
 function onTimerEnd() {

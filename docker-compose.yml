@@ -106,30 +106,30 @@ services:
         condition: service_started
       discovery:
         condition: service_healthy
-  blockchain-service:
-    build: ./blockchain (node 1)
-    container_name: blockchain-service1
-    ports:
-      - "9011:9011"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-    depends_on:
-      discovery:
-        condition: service_healthy
-      rabbitmq: 
-        condition: service_healthy
-  blockchain-service2:
-    build: ./blockchain (node 2)
-    container_name: blockchain-service2
-    ports:
-      - "9012:9012"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-    depends_on:
-      discovery:
-        condition: service_healthy
-      rabbitmq: 
-        condition: service_healthy
+  # blockchain-service:
+  #   build: ./blockchain (node 1)
+  #   container_name: blockchain-service1
+  #   ports:
+  #     - "9011:9011"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     rabbitmq: 
+  #       condition: service_healthy
+  # blockchain-service2:
+  #   build: ./blockchain (node 2)
+  #   container_name: blockchain-service2
+  #   ports:
+  #     - "9012:9012"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+  #     rabbitmq: 
+  #       condition: service_healthy
   car-insertion:
     build: ./car-insertion
     container_name: car-insertion
@@ -160,22 +160,22 @@ services:
         condition: service_healthy
       car-insertion:
         condition: service_started
-  car-rating:
-    build: ./car-rating
-    container_name: car-rating
-    ports:
-      - "9004:9004"
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-    depends_on:
-      db:
-        condition: service_started
-      discovery:
-        condition: service_healthy
-      car-insertion:
-        condition: service_started
+  # car-rating:
+  #   build: ./car-rating
+  #   container_name: car-rating
+  #   ports:
+  #     - "9004:9004"
+  #   environment:
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
+  #   depends_on:
+  #     db:
+  #       condition: service_started
+  #     discovery:
+  #       condition: service_healthy
+  #     car-insertion:
+  #       condition: service_started
   car-book:
     build: ./car-book
     container_name: car-book
@@ -194,18 +194,18 @@ services:
         condition: service_healthy
       car-search:
         condition: service_started
-  chat:
-    build: ./chat
-    container_name: chat
-    ports:
-      - "9006:9006"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
-      BROKER_RELAY_HOST: chat
-      SPRING_JPA_HIBERNATE_DDL-AUTO: create
-    depends_on:
-      db:
-        condition: service_started
+  # chat:
+  #   build: ./chat
+  #   container_name: chat
+  #   ports:
+  #     - "9006:9006"
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+  #     BROKER_RELAY_HOST: chat
+  #     SPRING_JPA_HIBERNATE_DDL-AUTO: create
+  #   depends_on:
+  #     db:
+  #       condition: service_started
   notification-service:
     build: ./notification
     container_name: notification-service

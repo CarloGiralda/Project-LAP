@@ -3,18 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GET Request Example</title>
+  <title>Chat</title>
   <link rel="stylesheet" href="/css/formPage.css" />
   <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
         crossorigin="anonymous">
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <script src="/js/navBar.js"></script>
   <script src="/js/Chat/chatRequest.js"></script>
   <script src="/js/cookie.js"></script>
 </head>
 
 <body onload="chatRequest()">
+
+
+<header>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary " data-bs-theme="dark">
+    <div class="container-fluid">
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+        <div class="navbar-nav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/" id="home">Home</a>
+            </li>
+
+            <!-- Conditionally show links if user is not logged-in -->
+            <li class="nav-item">
+              <a class="nav-link" href="/registration" id="signupLink">Sign-up</a>
+            </li>
+            <li class="nav-item" >
+              <a class="nav-link" href="/login" id="loginLink">Login</a>
+            </li>
+
+            <!-- Conditionally show links if user is logged-in -->
+            <li class="nav-item">
+              <a class="nav-link" href="/chat/page" id="chatLink">Chat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/carinsert/selection" id="carInsertion">Insert</a>
+            </li>
+            <li>
+              <a class="nav-link" href="/searchbar" id="search" style="display: none">Search</a>
+            </li>
+            <li>
+              <a class="nav-link" href="/auction" id="auction" style="display: none">Auctions</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+
+
+      <!-- User account and notification menu dropdown -->
+      <div class="navbar-collapse justify-content-end" id="navbarNavDarkDropdown">
+
+        <ul class="navbar-nav d-flex flex-row me-1">
+
+          <!-- Notification dropdown menu -->
+          <li id="notificationDropdown" class="nav-item me-3 me-lg-0 dropdown" style="display: block">
+            <a id ="bellLink" class="me-3 btn btn-dark rounded-4" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-bell"></i>
+              <span id="notificationBell" class="badge rounded-pill badge-notification bg-danger" style="display: compact"></span>
+            </a>
+
+            <ul id="NotificationList" class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark hidden-arrow animate slideIn">
+              <!-- Add dynamic content for notifications -->
+
+            </ul>
+          </li>
+        </ul>
+
+
+        <ul class="navbar-nav">
+
+          <li id="userDropDown" class="nav-item dropdown" style="display: block">
+            <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <span style="color: #ff9900;" id="usernameDisplay">User</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-lg-end dropdown-menu-dark animate slideIn">
+
+              <li><a class="dropdown-item" href="/userSettings">User settings</a></li>
+
+              <li><a class="dropdown-item" href="/login?loggedOut=true">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+</header>
 
 <main>
   <section class="py-5 text-center container">
@@ -36,6 +123,9 @@
   </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
 
 
 </body>

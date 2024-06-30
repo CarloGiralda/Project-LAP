@@ -39,9 +39,17 @@ function getInsertedCar() {
 
 
                 for(let x= 0; x < response.length; x++) {
+
+                    let content
+                    if (String(response[x]["offer"]["pricePerHour"]) === "-1"){
+                        content = ["AUCTION CAR"]
+                    } else {
+                        content = ["Price: " + String(response[x]["offer"]["pricePerHour"]) + " coins/hour"]
+                    }
+
                     const card = createCard(
                         String(response[x]["car"]["brand"]) + ' ' + String(response[x]["car"]["model"]),
-                        ["Price: " + String(response[x]["offer"]["pricePerHour"]) + " coins/hour"],
+                        content,
                         ["http://localhost:8081/carinsert/modify/" + response[x]["car"]["cid"]],
                         response[x]["car"]["image"]
                     )

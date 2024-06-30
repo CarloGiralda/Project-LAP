@@ -30,6 +30,7 @@ public class SearchController {
         ArrayList<ReturnDTO> response = new ArrayList<>();
         for (SearchDTO car : cars) {
 
+            log.info("CAR PRICE: {} {}",car.getOffer().getPricePerHour(),Objects.equals(car.getOffer().getPricePerHour(), "-1") );
             if (!Objects.equals(car.getOffer().getPricePerHour(), "-1")){
                 response.add(new ReturnDTO(car.getCar().getCid(),
                         car.getCar().getBrand(),
