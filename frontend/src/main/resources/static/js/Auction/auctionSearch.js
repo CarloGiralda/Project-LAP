@@ -12,37 +12,82 @@ const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
 const romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
 
 document.addEventListener('DOMContentLoaded', () => {
+
+async function getBalance(){
+    const url = "http://localhost:8080/payment/getBalance"
+    const token = getCookie("jwtToken");
+
+    return await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': "Bearer " + token
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return null;
+            }
+
+        })
+        .then(data => {
+            if (data !== null){
+                console.log("balance: ", data);
+                return data;
+            } else {
+                showErrorMessage("Cannot get your balance because service is not available, retry later!")
+            }
+
+
+        })
+        .catch(error => console.log(error));
+}
+
+// TODO test the auction search (it should not show the auctions that took place in the past)
+document.addEventListener('DOMContentLoaded', async () => {
     const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
     const searchUrl = serverUrl + "/search";
 
-    document.getElementById('bidButton').addEventListener('click', () => {
-        const bid = document.getElementById('bid').value; // fetch from user
-        document.getElementById('yourValue').textContent = 'Your bid: ' + bid;
-        document.getElementById('bidLabel').style.display = 'none'
-        document.getElementById('bid').style.display = 'none';
-        document.getElementById('bidButton').style.display = 'none';
-        document.getElementById('status').textContent = 'Waiting for final result of auction...';
-        const raftNode = new RaftNode(peer, myPeerId, peersIds, bid);
-        console.log('RaftNode initialized:', raftNode);
-    });
+    document.getElementById( 'bidButton' ).addEventListener( 'click',  () => {
+        const bid = document.getElementById( 'bid' ).value; // fetch from user
+        // TODO here check of balance
 
-    fetch(searchUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer " + token
-        },
-    })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(body => {
-            clearButtons()
-            addButtons(body)
-        })
-        .catch(_ => {
-            document.getElementById('status').textContent = 'Failed to fetch auctions...';
-        });
+        document.getElementById( 'yourValue' ).textContent = 'Your bid: ' + bid;
+        document.getElementById( 'bidLabel' ).style.display = 'none'
+        document.getElementById( 'bid' ).style.display = 'none';
+        document.getElementById( 'bidButton' ).style.display = 'none';
+        document.getElementById( 'status' ).textContent = 'Waiting for final result of auction...';
+        const raftNode = new RaftNode( peer, myPeerId, peersIds, bid );
+        console.log( 'RaftNode initialized:', raftNode );
+    } );
+
+    const balance = await getBalance();
+
+    if (Number(balance) <= 0){
+        document.getElementById( 'balanceText' ).style.display = 'block'
+
+    } else {
+        fetch( searchUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + token
+            },
+        } )
+            .then( function (response) {
+                return response.json();
+            } )
+            .then( body => {
+                clearButtons()
+                addButtons( body )
+            } )
+            .catch( _ => {
+                document.getElementById( 'status' ).textContent = 'Failed to fetch auctions...';
+            } );
+    }
+
+
 })
 
 
