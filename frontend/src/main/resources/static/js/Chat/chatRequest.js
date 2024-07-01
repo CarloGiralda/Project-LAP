@@ -26,20 +26,21 @@ function addChats() {
     var username = sessionStorage.getItem("username")
     var cont = document.getElementById("list");
 
-    for(var x= 0; x < rowsAdded; x++) {
-        var receiver = sessionStorage.getItem("Receiver: " + x)
+    for (var x = 0; x < rowsAdded; x++) {
+        var receiver = sessionStorage.getItem("Receiver: " + x);
 
-        const link = "http://localhost:8081/chat/m?sender=" + username + "&receiver=" + receiver
+        const link = "http://localhost:8081/chat/m?sender=" + username + "&receiver=" + receiver;
         const newLi = document.createElement('li');
         const newLink = document.createElement('a');
 
-        newLink.href = link
+        newLink.href = link;
+        newLi.classList.add("custom-li");
 
-        const textElem = document.createElement('b')
-        textElem.innerText = receiver
+        const textElem = document.createElement('b');
+        textElem.innerText = receiver;
 
-        newLink.appendChild(textElem)
-        newLi.appendChild(newLink)
-        cont.appendChild(newLi)
+        newLink.appendChild(textElem);
+        newLi.appendChild(newLink);
+        cont.appendChild(newLi);
     }
 }

@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -69,13 +72,15 @@ public class AuctionService {
         }
     }
 
-    public List<Auction> getAllAuction() throws Exception {
-        try {
-            return auctionRepository.findAll();
-        } catch (DataIntegrityViolationException e){
-            log.info("constraints exception");
-            throw new Exception(e.getMessage());
+    public List<Auction> getAllValidAuctions() throws Exception {
+        List<Auction> auctions = auctionRepository.findAll();
+        List<Auction> validAuctions = new ArrayList<>();
+        for (Auction auction : auctions) {
+            if (isAfterCurrentTime(auction.getStartDate())) {
+                validAuctions.add(auction);
+            }
         }
+        return validAuctions;
     }
 
     public void deleteAuction(Long auctionId) throws Exception{
@@ -92,6 +97,10 @@ public class AuctionService {
         }
     }
 
-
+    private static boolean isAfterCurrentTime(String isoDateTime) {
+        OffsetDateTime dateTime = OffsetDateTime.parse(isoDateTime);
+        OffsetDateTime currentTime = OffsetDateTime.now();
+        return dateTime.isAfter(currentTime);
+    }
 }
 

@@ -30,6 +30,17 @@
       text-align: center;
     }
 
+    #error {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      font-size: 4em; /* Adjust the font size as needed */
+      text-align: center;
+    }
+
     #bidButton {
       display: none;
       margin: 10px;
@@ -213,6 +224,9 @@
 
         <!-- Final Value -->
         <p id="value">
+
+        <!-- Error Field -->
+        <p id="error">
 
         <button type="button" onclick="window.location.href='http://localhost:8081/'" class="btn btn-secondary mt-sm-4 w-50" style="flex: 1;">Go back</button>
       </div>

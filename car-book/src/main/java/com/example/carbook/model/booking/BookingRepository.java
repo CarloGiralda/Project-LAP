@@ -47,16 +47,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("username") String username
     );
 
-
-
     ArrayList<Booking> findByUsername(String username);
     ArrayList<Booking> findByCid(Long cid);
     ArrayList<Booking> findByUsernameAndCid(String username, Long Cid);
     ArrayList<Booking> findByUsernameAndMadeDate(String username, String madeDate);
     ArrayList<Booking> findByUsernameAndFromDay(String username, String from);
     ArrayList<Booking> findByUsernameAndToDay(String username, String to);
-
-
-
-
+    void deleteBookingByBid(Long bid);
 }
