@@ -151,7 +151,10 @@ spring:
             - id: c-service
               uri: http://chat:9006
               predicates:
-                Path=/secured/**
+                - Path=/secured/**
+
+
+
 
               # carBook service reservation
             - id: carBook-service-reservation

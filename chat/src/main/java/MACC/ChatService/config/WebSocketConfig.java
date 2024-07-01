@@ -25,8 +25,7 @@ public class WebSocketConfig implements
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/secured/room").setAllowedOrigins("http://localhost:8081")
-                .setAllowedOrigins("http://localhost:8080").withSockJS();}
+        registry.addEndpoint("/secured/room").setAllowedOrigins("http://localhost:8080").setAllowedOrigins("http://localhost:8081").withSockJS();}
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -34,6 +33,8 @@ public class WebSocketConfig implements
         config.setApplicationDestinationPrefixes("/spring-security-mvc-socket");
         config.setUserDestinationPrefix("/secured/user");
     }
+
+
 
 
 }
