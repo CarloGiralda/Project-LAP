@@ -99,7 +99,7 @@ public class AuctionService {
 
     private static boolean isAfterCurrentTime(String isoDateTime) {
         OffsetDateTime dateTime = OffsetDateTime.parse(isoDateTime);
-        OffsetDateTime currentTime = OffsetDateTime.now();
+        OffsetDateTime currentTime = OffsetDateTime.now().plusHours(2);
         return dateTime.isAfter(currentTime);
     }
 }

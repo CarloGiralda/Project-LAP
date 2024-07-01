@@ -23,7 +23,9 @@ public class Blockchain {
 
     public void generateGenesis() {
         Payment p = new Payment(0L, "Genesis Block","-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz6oKArbCAQxTED6Fg8Hn0pzT0HkzO2Hoqrl04i7WReZtevN5Mq1Rbk/Ix6a0sb/5w1FzmKcLF/Wc9xO98/9nOvysXkdqOAoRi5PaY3GJgPqigg6dWQyvTqh3JiWmqUqs/XLTMafiplLsnglzNsdDIn67HA67XzHtWVjURqMyRasTiUMsWj1sBLyO4IoKG+mhzvSQ9FEM9UPsSf98pV5HtygiSI4vzsEPVxkgDPc8TeCvD8UUgP7keIEgxddbjoBL3/Yjnf/XME4A+BwCPUHoJTd9zp74LriuUMdnewM7mgwFgu/HVTB4ol/+Uhcy29A/ZAx1pam8M3sryE6mfN4BeQIDAQAB-----END PUBLIC KEY-----","1000000","");
+        Payment p1 = new Payment(1L, "Genesis Block", "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2MD5srCpW4yXy/jPSkdWkOohbRi/b/N5OnHtxqH0frQ0YUvAEyhMEjsLvSojRviaEH6enrgp35lLOQFsVpainB7rNi7W/dJ/m8TYoA0F60lZNpthUfi3iAGYYdYHbpxubciGm6F8uBqKDaBP5bW0cgGvh38egwy4wRGWHrIjnV0uBFlL36lDjXUG/izth0T4JHukDcqxW0gdxjo2ROYZL/pZP11wzx6Qzx/Q/qRbfAPznfSEiJSuHQn1D7KBPmSdgsWJWjEL5YaU0msNNVWhnRedpxqo0FFJj6JNv9ToJ8cLZ1py3HlDEg6jDV8M7xZ5IqwhhKoHpGifNW0zFQm9/wIDAQAB-----END PUBLIC KEY-----", "1000", "");
         Block genesis = new Block("None", p);
+        genesis.addToBlock(p1);
         blocks.add(genesis);
     }
 

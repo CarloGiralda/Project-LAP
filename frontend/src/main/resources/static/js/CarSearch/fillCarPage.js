@@ -1,7 +1,6 @@
+var isAuction = false;
+
 document.addEventListener('DOMContentLoaded', () => {
-
-
-
     const isAuthenticated = document.cookie.includes( 'jwtToken' )
     if (!isAuthenticated){
         window.location.href = "http://localhost:8081/login"
@@ -80,6 +79,12 @@ function fillPage() {
                 return response.json();
             }).then(async function (body) {
                 console.log(body);
+
+                var pricePerHour = Number(body["offer"]["pricePerHour"]);
+                if (pricePerHour === -1) {
+                    isAuction = true;
+                }
+
                 if (body["car"]["image"] !== null) {
                     const blob = new Blob([new Uint8Array(body["car"]["image"])], { type: 'image/jpeg' });
                     const image = document.getElementById("image");
@@ -90,7 +95,11 @@ function fillPage() {
                 const rentButton = document.getElementById("rent");
                 const nowAv = document.getElementById("nowAvailable")
 
-                if (!body["offer"]["available"]) {
+                if (isAuction) {
+                    document.getElementById("notifyButton").style.display = "none";
+                    rentButton.style.display = "none";
+                    nowAv.textContent = "No"
+                } else if (!body["offer"]["available"]) {
                     rentButton.disabled = true
                     nowAv.textContent = "No"
                 } else {
@@ -130,7 +139,11 @@ function fillPage() {
                 fd.innerHTML += fromdate;
                 // set the rent price of the car
                 var price = document.getElementById("price");
-                price.innerHTML += body["offer"]["pricePerHour"] + " coins";
+                if (isAuction) {
+                    price.innerHTML += "Car reserved for auction";
+                } else {
+                    price.innerHTML += pricePerHour + " coins";
+                }
                 // set renter name
                 var renter = document.getElementById("renter");
                 renter.innerHTML += body["offer"]["renterUsername"];

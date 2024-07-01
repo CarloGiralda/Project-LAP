@@ -394,8 +394,8 @@ public class BookingService {
     }
 
     public void deleteBooking(Long bid) {
-        bookingRepository.deleteBookingByBid(bid);
         bookingMap.remove(bid);
+        bookingRepository.deleteBookingByBid(bid);
     }
 }
 

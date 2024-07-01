@@ -1,4 +1,28 @@
+let isAuction;
+let from;
+let to;
+let pricePerHour;
+
 document.addEventListener("DOMContentLoaded", async function () {
+    isAuction = Number(sessionStorage.getItem("isAuction"));
+
+    from = document.getElementById("from");
+    to = document.getElementById("to");
+    pricePerHour = document.getElementById("price");
+    if (isAuction === 1) {
+        document.getElementById("fromLabel").style.display = "none";
+        document.getElementById("toLabel").style.display = "none";
+        document.getElementById("priceLabel").style.display = "none";
+        from.style.display = "none";
+        from.autofocus = false;
+        from.required = false;
+        to.style.display = "none";
+        to.autofocus = false;
+        to.required = false;
+        pricePerHour.style.display = "none";
+        pricePerHour.autofocus = false;
+        pricePerHour.required = false;
+    }
 
     // Check if the user is authenticated based on the presence of the HttpOnly cookie
     const isAuthenticated = document.cookie.includes('jwtToken')
@@ -22,7 +46,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 })
 
-        async function submitForm() {
+async function submitForm() {
+    sessionStorage.removeItem("isAuction");
     var token = getCookie("jwtToken");
 
     // Replace these URLs with the ones you want to use
@@ -30,16 +55,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     var successUrl = "http://localhost:8081/carinsert/insertcar";
     var problemUrl = "http://localhost:8081/failed";
 
-    // Get form data
-    var from = document.getElementById("from").value;
-    // conversion from date to epoch
-    var fd = new Date(from);
-    fd = fd.getTime();
-    var to = document.getElementById("to").value;
-    // conversion from date to epoch
-    var td = new Date(to);
-    td = td.getTime();
-    var price = document.getElementById("price").value;
+    var fd = new Date().getTime();
+    var td = new Date().getTime();
+    var price = "-1";
+
+    if (!isAuction) {
+        price = pricePerHour.value;
+        // conversion from date to epoch
+        fd = new Date(from.value);
+        fd = fd.getTime();
+        // conversion from date to epoch
+        td = new Date(to.value);
+        td = td.getTime();
+    }
+
     var username = sessionStorage.getItem("username");
     var zone = document.getElementById("zone").value;
 

@@ -11,7 +11,6 @@ const token = getCookie("jwtToken");
 const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
 const romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
 
-// TODO test the auction search (it should not show the auctions that took place in the past)
 document.addEventListener('DOMContentLoaded', () => {
     const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
     const searchUrl = serverUrl + "/search";
