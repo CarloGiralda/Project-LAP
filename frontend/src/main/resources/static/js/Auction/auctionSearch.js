@@ -10,8 +10,7 @@ let bid;
 const token = getCookie("jwtToken");
 const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
 const romeOffset = 2 * 60 * 60 * 1000; // Rome is UTC+2
-
-document.addEventListener('DOMContentLoaded', () => {
+let balance
 
 async function getBalance(){
     const url = "http://localhost:8080/payment/getBalance"
@@ -44,29 +43,33 @@ async function getBalance(){
         .catch(error => console.log(error));
 }
 
-// TODO test the auction search (it should not show the auctions that took place in the past)
 document.addEventListener('DOMContentLoaded', async () => {
     const serverUrl = 'http://localhost:8080/auction'; // Set your server URL here
     const searchUrl = serverUrl + "/search";
 
     document.getElementById( 'bidButton' ).addEventListener( 'click',  () => {
-        const bid = document.getElementById( 'bid' ).value; // fetch from user
-        // TODO here check of balance
+        document.getElementById('balanceLabel').style.display = 'none'
+        let bid = document.getElementById( 'bid' ).value; // fetch from user
 
-        document.getElementById( 'yourValue' ).textContent = 'Your bid: ' + bid;
-        document.getElementById( 'bidLabel' ).style.display = 'none'
-        document.getElementById( 'bid' ).style.display = 'none';
-        document.getElementById( 'bidButton' ).style.display = 'none';
-        document.getElementById( 'status' ).textContent = 'Waiting for final result of auction...';
+        if (balance < bid) {
+            document.getElementById( 'balanceText' ).style.display = 'block'
+            bid = 0
+        } else {
+            document.getElementById( 'yourValue' ).textContent = 'Your bid: ' + bid;
+            document.getElementById( 'bidLabel' ).style.display = 'none'
+            document.getElementById( 'bid' ).style.display = 'none';
+            document.getElementById( 'bidButton' ).style.display = 'none';
+            document.getElementById( 'status' ).textContent = 'Waiting for final result of auction...';
+        }
+
         const raftNode = new RaftNode( peer, myPeerId, peersIds, bid );
         console.log( 'RaftNode initialized:', raftNode );
-    } );
+    });
 
-    const balance = await getBalance();
+    balance = await getBalance();
 
-    if (Number(balance) <= 0){
+    if (Number(balance) <= 0) {
         document.getElementById( 'balanceText' ).style.display = 'block'
-
     } else {
         fetch( searchUrl, {
             method: 'GET',
@@ -86,8 +89,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById( 'status' ).textContent = 'Failed to fetch auctions...';
             } );
     }
-
-
 })
 
 
@@ -255,6 +256,9 @@ function fetchPeerIdsFromServer() {
             console.log(data)
             peersIds = data
             isReadyAuction = true
+            const balanceLabel = document.getElementById('balanceLabel')
+            balanceLabel.style.display = 'block'
+            balanceLabel.innerText += balance
             document.getElementById('bidLabel').style.display = 'block'
             document.getElementById('bid').style.display = 'block'
             document.getElementById('bidButton').style.display = 'block'

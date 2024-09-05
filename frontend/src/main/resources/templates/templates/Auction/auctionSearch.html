@@ -207,13 +207,16 @@
           (e.g. if the auction ends at 15:55, then the booking will start at 16:00 and will end at 17:00)
         </p>
 
-        <p class="lead text-body-primary text-center" id="balanceText" style="display: block">You have not sufficient balance! Start rent a car and earn money
+        <p class="lead text-body-primary text-center" id="balanceText" style="display: none">You have not sufficient balance! Start rent a car and earn money
         </p>
 
         <!--HERE DYNAMICALLY INSERT AUCTIONS-->
         <div class="col-md-6 col-md-offset-3 mx-auto w-50" id="list"></div>
 
         <p id="timer"></p>
+
+        <label id="balanceLabel" style="display: none">Current balance:</label>
+        <br>
 
         <label for="bid" id="bidLabel" style="display: none">Auction offer
           <input type="text" id="bid" placeholder="Enter bid">
