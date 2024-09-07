@@ -50,17 +50,19 @@ This application is built using a microservices architecture. Key components inc
 - **PostgreSQL** as DBMS
 
 ### Installation
-
-1. **Clone the Repository**:
+0. **Install** [docker](https://docs.docker.com/engine/install/) if you don't have on your machine.
+  
+1. **Clone the repository or simply download the [docker-compose-hub](/docker-compose-hub.yml) file**:
     ```sh
     git clone <url>
     cd car-rental-app
     ```
 
-2. **Build and Run with Docker**:
+3. **Build and Run with Docker**:
     ```sh
-    docker-compose up --build
+    docker compose -f docker-compose-hub.yml up -d
     ```
+    This command should download and build all the required containers from this [repository](https://hub.docker.com/repositories/gabriele2000).
 
 ### Running the Application
 
@@ -83,9 +85,10 @@ Once the application is set up and running, you can access the frontend through 
 | **Notification**      | Sends notifications for car availability         | 9007  |
 | **Select Area**       | Manages area selection for geolocation           | 9008  |
 | **Payment Service**   | Manages payment transactions                     | 9010  |
+| **Auction**           | Auction service                     | 9013  |
 | **Blockchain (miner 1)**        | Manages blockchain transactions                  | 9011  |
 | **Blockchain (miner 2)**       | Secondary blockchain service                     | 9012  |
-| **Auction**           | Auction service                     | 9013  |
+
 
 
 Each service is independently deployable and can be scaled based on demand.
