@@ -8,7 +8,7 @@ Welcome to the Car Rental Application! This application allows users to search a
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
+  - [Warning](#-warning)
   - [Installation](#installation)
   - [Running the Application](#running-the-application)
 - [Microservices Overview](#-microservices-overview)
@@ -42,27 +42,73 @@ This application is built using a microservices architecture. Key components inc
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Warning:
+   - This application will run a **total of 16 containers**, which will consume **approximately 4139 MB (4.1 GB) of disk space**.
+   - The two blockchain nodes included in this setup use a type of **Proof of Work (PoW)** algorithm, which is computationally intensive. 
+     - **Ensure you have sufficient available RAM and processing power** before running the application.
+     - Running these containers on systems with limited memory or CPU resources could degrade performance or cause the system to become unresponsive.
+   - **System Requirements**:
+     - At least **8 GB of RAM** is recommended.
+     - A modern multi-core CPU is suggested for handling the blockchain nodes.
 
-- **Java 17** or higher
-- **Spring Boot** 3.x or higher
-- **Docker** (for containerization)
-- **PostgreSQL** as DBMS
+   - If your system doesn't meet these requirements, you may want to avoid running the blockchain services, or consider reducing the load by running fewer containers (in that case some service will no longer be available depending on which ones you stopped)
 
 ### Installation
-0. **Install** [docker](https://docs.docker.com/engine/install/) if you don't have on your machine.
-  
-1. **Clone the repository or simply download the [docker-compose-hub](/docker-compose-hub.yml) file**:
+1. **Install Docker**:
+   - If Docker is not already installed, follow these steps based on your operating system:
+     
+     - **For Windows**:
+       - Download Docker Desktop from the official [Docker website](https://docs.docker.com/engine/install/).
+       - Follow the installation instructions.
+       - After installation, make sure to enable Docker Desktop and WSL 2 (if applicable).
+     
+     - **For macOS**:
+       - Download Docker Desktop for Mac from [here](https://docs.docker.com/engine/install/).
+       - Follow the installation instructions.
+
+     - **For Linux**:
+       - Follow the Docker Engine installation guide for your Linux distribution. For example, on Ubuntu:
+         ```sh
+         sudo apt-get update
+         sudo apt-get install docker-ce docker-ce-cli containerd.io
+         ```
+       - Refer to the official Docker documentation for detailed instructions for other Linux distributions: [Install Docker Engine](https://docs.docker.com/engine/install/).
+
+   - After installation, verify Docker is running:
+     ```sh
+     docker --version
+     ```
+
+
+2. **Clone the repository or simply download the [docker-compose](/docker-compose-hub.yml) file**:
     ```sh
     git clone <url>
     cd car-rental-app
     ```
+3. **Changing Ports (if necessary)**:
+   - If any of the ports specified in the `docker-compose-hub.yml` file are already in use on your machine, you can change them by editing the `ports` section in the `docker-compose-hub.yml` file. 
+   
+   - For example, if port `8080` is already being used, change the following line:
+     ```yaml
+     ports:
+       - "8080:8080"
+     ```
+     to another available port, such as `8082`:
+     ```yaml
+     ports:
+       - "8082:8080"
+     ```
 
-3. **Build and Run with Docker**:
+   - Repeat this process for any other services whose ports conflict with ones already in use.
+
+
+4. **Build and Run with Docker**:
     ```sh
     docker compose -f docker-compose-hub.yml up -d
     ```
-    This command should download and build all the required containers from this [repository](https://hub.docker.com/repositories/gabriele2000).
+   This command will pull the required images from [Docker Hub](https://hub.docker.com/repositories/gabriele2000) and start the application. If you changed any ports, access the services via the new ports you've configured.
+5. **Check services**: visit localhost:8081` to access the frontend and `localhost:8761` to check the availability of the other services using eureka server
+   
 
 ### Running the Application
 
