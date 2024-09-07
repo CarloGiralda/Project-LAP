@@ -107,7 +107,7 @@ This application is built using a microservices architecture. Key components inc
     docker compose -f docker-compose-hub.yml up -d
     ```
    This command will pull the required images from [Docker Hub](https://hub.docker.com/repositories/gabriele2000) and start the application. If you changed any ports, access the services via the new ports you've configured.
-5. **Check services**: visit localhost:8081` to access the frontend and `localhost:8761` to check the availability of the other services using eureka server
+5. **Check services**: visit `localhost:8081` to access the frontend and `localhost:8761` to check the availability of the other services.
    
 
 ### Running the Application
