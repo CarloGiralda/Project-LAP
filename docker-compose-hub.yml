@@ -1,0 +1,251 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: gabriele2000/lab-remote-frontend:latest
+    container_name: frontend
+    ports:
+      - "8081:8081"
+
+  db:
+    image: postgres:12.3-alpine
+    container_name: db
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGPORT: 5433
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=guest'
+      - 'RABBITMQ_DEFAULT_USER=guest'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+        test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 20s
+
+  discovery:
+    image: gabriele2000/lab-remote-discovery:latest
+    container_name: discovery
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  api-gw:
+    image: gabriele2000/lab-remote-api-gw:latest
+    container_name: api-gw
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      discovery:
+        condition: service_healthy
+
+  user-service:
+    image: gabriele2000/lab-remote-user-service:latest
+    container_name: user-service
+    ports:
+      - "9000:9000"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+
+  area-service:
+    image: gabriele2000/lab-remote-area-service:latest
+    container_name: area-service
+    ports:
+      - "9008:9008"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+
+  send-email:
+    image: gabriele2000/lab-remote-send-email:latest
+    container_name: send-email
+    ports:
+      - "9001:9001"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+
+  payment-service:
+    image: gabriele2000/lab-remote-payment-service:latest
+    container_name: payment-service
+    ports:
+      - "9010:9010"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+
+  blockchain-service:
+    image: gabriele2000/lab-remote-blockchain-service:latest
+    container_name: blockchain-service1
+    ports:
+      - "9011:9011"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      discovery:
+        condition: service_healthy
+      rabbitmq: 
+        condition: service_healthy
+
+  blockchain-service2:
+    image: gabriele2000/lab-remote-blockchain-service2:latest
+    container_name: blockchain-service2
+    ports:
+      - "9012:9012"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      discovery:
+        condition: service_healthy
+      rabbitmq: 
+        condition: service_healthy
+
+  car-insertion:
+    image: gabriele2000/lab-remote-car-insertion:latest
+    container_name: car-insertion
+    ports:
+      - "9002:9002"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+
+  car-search:
+    image: gabriele2000/lab-remote-car-search:latest
+    container_name: car-search
+    ports:
+      - "9003:9003"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+      car-insertion:
+        condition: service_started
+
+  car-rating:
+    image: gabriele2000/lab-remote-car-rating:latest
+    container_name: car-rating
+    ports:
+      - "9004:9004"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+      car-insertion:
+        condition: service_started
+
+  car-book:
+    image: gabriele2000/lab-remote-car-book:latest
+    container_name: car-book
+    ports:
+      - "9005:9005"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
+      rabbitmq: 
+        condition: service_healthy
+      car-search:
+        condition: service_started
+
+  chat:
+    image: gabriele2000/lab-remote-chat:latest
+    container_name: chat
+    ports:
+      - "9006:9006"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      BROKER_RELAY_HOST: chat
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+    depends_on:
+      db:
+        condition: service_started
+
+  notification-service:
+    image: gabriele2000/lab-remote-notification-service:latest
+    container_name: notification-service
+    ports:
+      - "9007:9007"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      discovery:
+        condition: service_healthy
+      rabbitmq: 
+        condition: service_healthy
+
+  auction-service:
+    image: gabriele2000/lab-remote-auction-service:latest
+    container_name: auction-service
+    ports:
+      - "9013:9013"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/postgres
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+    depends_on:
+      db:
+        condition: service_started
+      discovery:
+        condition: service_healthy
