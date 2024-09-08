@@ -2,6 +2,8 @@
 
 Welcome to the Car Rental Application! This application allows users to search and rent cars, participate in auctions, and manage transactions using blockchain technology. The system is built using a microservices architecture with Spring Boot, and includes features like JWT authentication, real-time notifications, and geolocation-based car listings.
 
+# Documentation
+You can find [here](https://drive.google.com/drive/folders/1-7Nzqqyai_C3H2Su1ntSMs8m3TqjnbBv?usp=drive_link) all the material about the development process (Scrum, user requirements, software estimation etc.) 
 
 ## 📋 Table of Contents
 
